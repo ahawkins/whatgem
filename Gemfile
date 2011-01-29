@@ -32,5 +32,6 @@ group :test do
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'simplecov'
+  gem 'remarkable_activerecord', '>=4.0.0.alpha2'
 end
 

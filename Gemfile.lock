@@ -153,6 +153,15 @@ GEM
     redis (2.1.1)
     redis-namespace (0.8.0)
       redis (< 3.0.0)
+    remarkable (4.0.0.alpha4)
+      rspec (>= 2.0.0.alpha11)
+    remarkable_activemodel (4.0.0.alpha4)
+      remarkable (~> 4.0.0.alpha4)
+      rspec (>= 2.0.0.alpha11)
+    remarkable_activerecord (4.0.0.alpha4)
+      remarkable (~> 4.0.0.alpha4)
+      remarkable_activemodel (~> 4.0.0.alpha4)
+      rspec (>= 2.0.0.alpha11)
     resque (1.10.0)
       json (~> 1.4.6)
       redis-namespace (~> 0.8.0)
@@ -229,6 +238,7 @@ DEPENDENCIES
   oa-oauth
   pg
   rails (= 3.0.3)
+  remarkable_activerecord (>= 4.0.0.alpha2)
   resque
   rspec-rails
   ruby-debug19
