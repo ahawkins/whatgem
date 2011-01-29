@@ -11,10 +11,13 @@ class User < ActiveRecord::Base
     if user = User.find_by_user_name(data["nickname"])
       user
     else # Create an user with a stub password. 
-      user = User.new
-      user.user_name = data['nickname']
-      user.save!
-      user
+      User.create! do |user|
+        user.user_name = data['nickname']
+      end
     end
+  end
+
+  def self.find_by_user_name(user_name)
+    where(["LOWER(user_name) = ?", user_name.downcase]).first
   end
 end

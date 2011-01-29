@@ -22,4 +22,11 @@ describe User do
       }.to change(User, :count).by(1)
     end
   end
+
+  describe 'User#find_by_user_name' do
+    it "should be case insensitive" do
+      User.find_by_user_name('Adman65').should eql(users(:Adman65))
+      User.find_by_user_name('adman65').should eql(users(:Adman65))
+    end
+  end
 end
