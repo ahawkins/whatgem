@@ -25,10 +25,9 @@ class User < ActiveRecord::Base
   end
 
   def repos
-    response = User.get("http://github.com/api/v2/json/repos/show/#{user_name}").parsed_response
-    response['repositories'].inject([]) do |collection, repo|
-      collection << Github::Repo.new(repo)
-      collection
+    response = User.get("http://github.com/api/v2/json/repos/show/#{user_name}")['repositories']
+    response.map([]) do |collection, repo|
+       Github::Repo.new(repo)
     end
   end
 end

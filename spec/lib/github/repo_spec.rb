@@ -69,6 +69,21 @@ describe Github::Repo do
     end
   end
 
+  descirbe "#repos" do
+    subject { users(:Adman65) }
+
+    it "should create an array of repos using the github api" do
+      api_url = "http://github.com/api/v2/json/repos/show/Adman65"
+      User.stub!(api_url => {'repositories' => [{:repo => :data}]})
+
+      mock_repo = mock(Github::Repo)
+      Github::Repo.should_receive(:new).with(:repo => :data).and_return(mock_repo)
+
+      users.repos.should eql([mock_repo])
+    end
+  end
+     
+
   describe 'Repo#find_by_user_and_name' do
     it "should delegate to find" do
       Github::Repo.should_receive(:find).with('Adman65', 'cashier')
