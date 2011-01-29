@@ -62,4 +62,18 @@ describe Github::Repo do
       end
     end
   end
+
+  describe '#user' do
+    it "should be an alias for the owner" do
+      subject.owner = 'Adman65'
+      subject.user.should eql('Adman65')
+    end
+  end
+
+  describe 'Repo#find_by_user_and_name' do
+    it "should delegate to find" do
+      Github::Repo.should_receive(:find).with('Adman65', 'cashier')
+      Github::Repo.find_by_user_and_name('Adman65', 'cashier')
+    end
+  end
 end
