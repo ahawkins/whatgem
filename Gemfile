@@ -8,17 +8,19 @@ gem 'rails', '3.0.3'
 gem 'sqlite3', :require => 'sqlite3'
 gem 'pg'
 gem 'heroku'
-gem "devise"
+gem "devise", :git => 'https://github.com/plataformatec/devise.git'
 gem "haml"
 gem "haml-rails"
 gem 'formtastic'
 gem 'httparty'
 gem 'resque'
+gem "oa-oauth", :require => "omniauth/oauth"
 
 group :development do
   gem 'wirble'
   gem 'hirb'
   gem 'infinity_test'
+  gem 'ruby-debug19'
 end
 
 group :test, :development do 
