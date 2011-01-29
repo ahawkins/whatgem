@@ -22,5 +22,9 @@ module Github
       new(get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name]).
          parsed_response['repository'].except('has_downloads', 'fork', 'size', 'private'))
     end
+
+    def self.find_by_user_and_name(user, name)
+      find(user, name)
+    end
   end
 end
