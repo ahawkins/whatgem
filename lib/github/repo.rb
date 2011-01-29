@@ -5,11 +5,19 @@ module Github
     include HTTParty
     format :json
 
-    attr_accessor :has_issues, :url, :watchers, :forks, :created_at, :pushed_at,
-      :has_wiki, :name, :owner, :description, :open_issues
+    ATTRIBUTES = [
+      :has_issues, :url, :watchers,
+      :forks, :created_at, :pushed_at,
+      :has_wiki, :name, :owner, 
+      :description, :open_issues
+    ]
+    
+    ATTRIBUTES.each {|attr| attr_accessor attr }
 
     def initialize(attributes = {}) 
-      attributes.each_pair do |name, value|
+      our_attributes = attributes.symbolize_keys.slice(*ATTRIBUTES)
+
+      our_attributes.each_pair do |name, value|
         self.send("#{name}=", value)
       end
     end
@@ -19,8 +27,8 @@ module Github
     end
 
     def self.find(user, repo_name)
-      new(get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name]).
-         parsed_response['repository'].except('has_downloads', 'fork', 'size', 'private'))
+      res = get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name])
+      new(res.parsed_response['repository'])
     end
 
     def self.find_by_user_and_name(user, name)

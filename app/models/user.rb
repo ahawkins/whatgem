@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+  include HTTParty
+  format :json
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
   devise :omniauthable, :trackable, :token_authenticatable
@@ -19,5 +22,13 @@ class User < ActiveRecord::Base
 
   def self.find_by_user_name(user_name)
     where(["LOWER(user_name) = ?", user_name.downcase]).first
+  end
+
+  def repos
+    response = User.get("http://github.com/api/v2/json/repos/show/#{user_name}").parsed_response
+    response['repositories'].inject([]) do |collection, repo|
+      collection << Github::Repo.new(repo)
+      collection
+    end
   end
 end

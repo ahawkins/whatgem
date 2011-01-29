@@ -34,8 +34,7 @@ describe Github::Repo do
 
       Github::Repo.stub!(:get => mock_response)
 
-      Github::Repo.should_receive(:new).with(api_response['repository'].
-        except('has_downloads', 'fork', 'size', 'private')).
+      Github::Repo.should_receive(:new).with(api_response['repository']).
         and_return(mock_repo)
 
       Github::Repo.find('Adman65', 'cashier').should eql(mock_repo)
