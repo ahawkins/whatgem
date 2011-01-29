@@ -10,7 +10,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110129195804) do
+ActiveRecord::Schema.define(:version => 20110129232236) do
+
+  create_table "ruby_gems", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ruby_gems", ["name"], :name => "index_ruby_gems_on_name", :unique => true
 
   create_table "users", :force => true do |t|
     t.datetime "remember_created_at"

@@ -3,6 +3,8 @@ require 'spec_helper'
 describe User do
   fixtures :users
 
+  it { should have_many(:gems).class_name('RubyGem').dependent(:destroy) }
+
   it { should validate_presence_of(:user_name) }
 
   it "should require a unique user name" do

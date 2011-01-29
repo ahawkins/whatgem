@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
   devise :omniauthable, :trackable, :token_authenticatable
 
+  has_many :gems, :class_name => "RubyGem", :dependent => :destroy
+
   validates :user_name, :presence => true, :uniqueness => true
 
   def self.find_for_github_oauth(access_token, signed_in_resource=nil)
