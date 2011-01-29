@@ -18,6 +18,7 @@ gem 'resque'
 group :development do
   gem 'wirble'
   gem 'hirb'
+  gem 'infinity_test'
 end
 
 group :test, :development do 
