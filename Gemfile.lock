@@ -113,6 +113,7 @@ GEM
     mime-types (1.16)
     multi_json (0.0.5)
     multipart-post (1.1.0)
+    nifty-generators (0.4.4)
     nokogiri (1.4.4)
     notifiers (1.1.0)
     oa-core (0.1.6)
@@ -224,6 +225,7 @@ DEPENDENCIES
   hirb
   httparty
   infinity_test
+  nifty-generators
   oa-oauth
   pg
   rails (= 3.0.3)

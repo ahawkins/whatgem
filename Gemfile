@@ -21,6 +21,7 @@ group :development do
   gem 'hirb'
   gem 'infinity_test'
   gem 'ruby-debug19'
+  gem 'nifty-generators'
 end
 
 group :test, :development do 
