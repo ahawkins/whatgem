@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Github::Repo do
+  fixtures(:users)
+
   describe 'Repo#find' do
     it "should use Httparty to get info" do
       mock_response = mock(HTTParty::Response, :parsed_response => {'repository' => {}})
@@ -69,17 +71,17 @@ describe Github::Repo do
     end
   end
 
-  descirbe "#repos" do
+  describe "#repos" do
     subject { users(:Adman65) }
 
     it "should create an array of repos using the github api" do
       api_url = "http://github.com/api/v2/json/repos/show/Adman65"
-      User.stub!(api_url => {'repositories' => [{:repo => :data}]})
+      User.stub!(:get).with(api_url).and_return({'repositories' => [{:repo => :data}]})
 
       mock_repo = mock(Github::Repo)
       Github::Repo.should_receive(:new).with(:repo => :data).and_return(mock_repo)
 
-      users.repos.should eql([mock_repo])
+      subject.repos.should eql([mock_repo])
     end
   end
      

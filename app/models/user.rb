@@ -42,6 +42,6 @@ class User < ActiveRecord::Base
         false
       end
     end
-    #possible_gems.reject {|gem| RubyGem.exists?(['LOWER(name) = ?', gem.name.downcase]) }
+    possible_gems.reject {|gem| RubyGem.exists?(['LOWER(name) = ?', gem.name.downcase]) }
   end
 end
