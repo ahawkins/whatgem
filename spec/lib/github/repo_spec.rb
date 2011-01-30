@@ -4,14 +4,7 @@ describe Github::Repo do
   fixtures(:users)
 
   describe 'Repo#find' do
-    it "should use Httparty to get info" do
-      mock_response = mock(HTTParty::Response, :parsed_response => {'repository' => {}})
-      Github::Repo.should_receive(:get).with('http://github.com/api/v2/json/repos/show/Adman65/cashier').
-        and_return(mock_response)
-      Github::Repo.find('Adman65', 'cashier')
-    end
-
-    it "should use the hash to create a new repo" do
+    it "should use the github api to get the info" do
       api_response = {"repository" => 
         { "has_issues" => true, 
           "url"=>"https://github.com/Adman65/cashier",
@@ -31,10 +24,10 @@ describe Github::Repo do
         }
       }
 
-      mock_response = mock(HTTParty::Response, :parsed_response => api_response)
-      mock_repo = mock(Github::Repo)
+      api_url = 'http://github.com/api/v2/json/repos/show/Adman65/cashier'
 
-      Github::Repo.stub!(:get => mock_response)
+      stub_request(:get, api_url).to_return(:body => api_response.to_json)
+      mock_repo = mock(Github::Repo)
 
       Github::Repo.should_receive(:new).with(api_response['repository']).
         and_return(mock_repo)

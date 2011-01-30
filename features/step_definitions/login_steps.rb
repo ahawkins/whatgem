@@ -1,9 +1,11 @@
-Then /^Github replies with "([^"]*)"$/ do |user_name|
+Given /^I login as "([^"]*)"$/ do |name|
+  visit '/'
+
   data = {
-    'user' => {
-      :login => user_name
+      'user' => {
+        :login => name
+      }
     }
-  }
 
   Devise::OmniAuth.short_circuit_authorizers!
   Devise::OmniAuth.stub!(:github) do |b|

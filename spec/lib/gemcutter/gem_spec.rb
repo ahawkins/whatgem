@@ -2,14 +2,7 @@ require 'spec_helper'
 
 describe Gemcutter::Gem do
   describe 'Repo#find' do
-    it "should use Httparty to get info" do
-      mock_response = mock(HTTParty::Response, :parsed_response => {})
-      Gemcutter::Gem.should_receive(:get).with('http://rubygems.org/api/v1/gems/rails.json').
-        and_return(mock_response)
-      Gemcutter::Gem.find('rails')
-    end
-
-    it "should use the hash to create a new repo" do
+    it "use the gemcutter api to find the info" do
       api_response = {
         "name" => "rails",
         "info" => "Agile web framework",
@@ -28,10 +21,10 @@ describe Gemcutter::Gem do
         "dependencies" => {}
       }
 
-      mock_response = mock(HTTParty::Response, :parsed_response => api_response)
-      mock_gem = mock(Gemcutter::Gem)
+      api_url = 'http://rubygems.org/api/v1/gems/rails.json'
+      stub_request(:get, api_url).to_return(:body => api_response.to_json)
 
-      Gemcutter::Gem.stub!(:get => mock_response)
+      mock_gem = mock(Gemcutter::Gem)
 
       Gemcutter::Gem.should_receive(:new).with(api_response.slice('name',
         'info', 'downloads', 'project_uri', 'homepage_uri',

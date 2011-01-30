@@ -34,5 +34,7 @@ group :test do
   gem 'cucumber-rails'
   gem 'simplecov'
   gem 'remarkable_activerecord', '>=4.0.0.alpha2'
+  gem 'webmock'
+  gem 'database_cleaner'
 end
 

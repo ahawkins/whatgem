@@ -70,3 +70,7 @@ After do
  Devise::OmniAuth.unshort_circuit_authorizers!
  Devise::OmniAuth.reset_stubs!(:github)
 end
+
+After do
+  WebMock.reset!
+end

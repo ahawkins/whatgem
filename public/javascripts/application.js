@@ -6,3 +6,12 @@ var Flash = {
     $("#container").prepend("<div id='flash_notice'>"+msg+"</div>");
   }
 };
+
+
+$(function(){
+  // add a class to the forms so they can be manipulated
+  // on the server
+  $("#import-gems form").live('submit', function(){
+    $(this).addClass('submitted');
+  });
+});
