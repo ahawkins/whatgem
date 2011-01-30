@@ -1,3 +1,7 @@
 When /^I submit the "([^"]*)" form$/ do |name|
-  page.execute_script %Q{$("input.name['value=#{name}']").closest('form').submit()}
+  page.execute_script %Q{$("#import-gems form.#{name}").submit()}
+end
+
+When /^I fill in "([^"]*)" with "([^"]*)" in the "([^"]*)" form$/ do |field, value, name|
+  steps %Q{Then I fill in "#{field}" with "#{value}" within "form.#{name}"}
 end

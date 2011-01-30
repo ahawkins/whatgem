@@ -71,6 +71,9 @@ After do
  Devise::OmniAuth.reset_stubs!(:github)
 end
 
+require 'webmock/cucumber'
+WebMock.disable_net_connect!(:allow_localhost => true)
+
 After do
   WebMock.reset!
 end
