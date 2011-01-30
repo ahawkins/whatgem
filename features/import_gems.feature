@@ -26,6 +26,16 @@ Feature: Import Gems
       | name | description | homepage |
       | mail | Ruby mail library | http://github.com/mikel/mail |
 
+  Scenario: The user chooses some tags
+    Given there are these tags: "caching and background"
+    And I login as "Adman65"
+    When I follow "Import Gems"
+    And I check "Caching" in the "cashier" form
+    And I check "Background" in the "cashier" form
+    And I submit the "cashier" form
+    And I wait
+    Then "cashier" should be tagged with "caching and background"
+
   @error
   Scenario: The gem is missing a name
     Given I login as "Adman65"

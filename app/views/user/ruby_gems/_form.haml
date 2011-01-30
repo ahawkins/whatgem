@@ -5,6 +5,7 @@
     = form.input :name, :input_html => {:class => 'name'}
     = form.input :description
     = form.input :homepage
+    = form.input :tag_list, :collection => available_tags, :as => :check_boxes
 
   = form.buttons do 
     = form.commit_button

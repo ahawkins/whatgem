@@ -6,3 +6,17 @@ Then /^there should be this gem:$/ do |table|
   RubyGem.exists?(attributes).should be_true
 end
 
+Given /^there are these tags: "([^"]*)"$/ do |tag_string|
+  tag_string.split(/(?:,|and)/).map(&:strip).each do |tag|
+    ActsAsTaggableOn::Tag.create! :name => tag
+  end
+end
+ 
+Then /^"([^"]*)" should be tagged with "([^"]*)"$/ do |name, tag_string|
+  ruby_gem = RubyGem.find_by_name!(name)
+
+  tag_string.split(/(?:,|and)/).map(&:strip).each do |tag|
+    ruby_gem.tag_list.should include(tag.downcase)
+  end
+end
+

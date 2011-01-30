@@ -16,6 +16,7 @@ gem 'httparty'
 gem 'resque'
 gem "oa-oauth", :require => "omniauth/oauth"
 gem 'jquery-rails'
+gem 'acts-as-taggable-on'
     
 group :development do
   gem 'wirble'

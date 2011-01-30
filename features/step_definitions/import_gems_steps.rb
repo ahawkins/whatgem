@@ -5,3 +5,7 @@ end
 When /^I fill in "([^"]*)" with "([^"]*)" in the "([^"]*)" form$/ do |field, value, name|
   steps %Q{Then I fill in "#{field}" with "#{value}" within "form.#{name}"}
 end
+
+When /^I check "([^"]*)" in the "([^"]*)" form$/ do |field, name|
+  steps %Q{Then I check "#{field}" within "form.#{name}"}
+end
