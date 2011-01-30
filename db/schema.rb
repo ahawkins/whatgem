@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(:version => 20110129232236) do
   create_table "ruby_gems", :force => true do |t|
     t.string   "name"
     t.string   "description"
+    t.string   "homepage"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"

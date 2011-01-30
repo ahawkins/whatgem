@@ -3,6 +3,7 @@ class CreateRubyGems < ActiveRecord::Migration
     create_table :ruby_gems do |t|
       t.string :name, :unique => true
       t.string :description
+      t.string :homepage
       t.references :user
       t.timestamps
     end

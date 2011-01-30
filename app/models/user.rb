@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
   devise :omniauthable, :trackable, :token_authenticatable
 
-  has_many :gems, :class_name => "RubyGem", :dependent => :destroy
+  has_many :ruby_gems, :dependent => :destroy
 
   validates :user_name, :presence => true, :uniqueness => true
 
@@ -28,8 +28,20 @@ class User < ActiveRecord::Base
 
   def repos
     response = User.get("http://github.com/api/v2/json/repos/show/#{user_name}")['repositories']
-    response.map([]) do |collection, repo|
-       Github::Repo.new(repo)
+    response.map { |info| Github::Repo.new info }
+  end
+
+  def build_gems_from_github_and_rubygems
+    possible_gems = repos.map { |repo| RubyGem.new :name => repo.name, :description => repo.description }
+    possible_gems = possible_gems.select do |repo|
+      begin
+        gemcutter_gem = Gemcutter::Gem.find(repo.name)
+        repo.homepage = gemcutter_gem.homepage
+        true
+      rescue
+        false
+      end
     end
+    #possible_gems.reject {|gem| RubyGem.exists?(['LOWER(name) = ?', gem.name.downcase]) }
   end
 end

@@ -1,0 +1,8 @@
+= semantic_form_for [:user, ruby_gem], :remote => true  do |form|
+  = form.inputs do
+    = form.input :name, :input_html => {:class => 'name'}
+    = form.input :description
+    = form.input :homepage
+
+  = form.buttons do 
+    = form.commit_button

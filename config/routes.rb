@@ -5,6 +5,11 @@ Whatgem::Application.routes.draw do
 
   namespace :user do
     root :to => 'dashboards#show'
+    resources :ruby_gems do
+      collection do 
+        get 'import'
+      end
+    end
   end
 
   # The priority is based upon order of creation:

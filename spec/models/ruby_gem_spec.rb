@@ -3,8 +3,7 @@ require 'spec_helper'
 describe RubyGem do
   fixtures(:ruby_gems)
 
-  it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:description) }
+  it { should validate_presence_of(:name, :description, :homepage) }
   
   it "should require a unique name" do
     subject.name = 'cashier'

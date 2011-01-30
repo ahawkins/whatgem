@@ -15,7 +15,8 @@ gem 'formtastic'
 gem 'httparty'
 gem 'resque'
 gem "oa-oauth", :require => "omniauth/oauth"
-
+gem 'jquery-rails'
+    
 group :development do
   gem 'wirble'
   gem 'hirb'
