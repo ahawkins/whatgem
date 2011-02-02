@@ -78,6 +78,160 @@ describe Github::Repo do
     end
   end
      
+  describe '#number_of_closed_issues' do
+    before(:each) do
+      api_response = %Q{{
+        "issues": [
+          {
+            "gravatar_id": "b8dbb1987e8e5318584865f880036796",
+            "position": 1.0,
+            "number": 8,
+            "votes": 3,
+            "created_at": "2010/01/22 17:56:29 -0800",
+            "comments": 10,
+            "body": "Maybe this? \r\n\r\n<http://www.htmldoc.org>",
+            "title": "PDF",
+            "updated_at": "2010/12/10 21:48:53 -0800",
+            "closed_at": null,
+            "user": "defunkt",
+            "labels": [
+              "feature"
+            ],
+            "state": "open"
+          }
+        ]
+      }}
+
+      stub_request(:get, 'http://github.com/api/v2/json/issues/list/schacon/showoff/closed').to_return(:body => api_response)
+    end
+
+    it "should use the issues array to determine the size" do
+      repo = Github::Repo.new :name => 'showoff', :owner => 'schacon'
+      repo.number_of_closed_issues.should eql(1)
+    end
+  end
+
+  describe '#number_of_open_issues' do
+    before(:each) do
+      api_response = %Q{{
+        "issues": [
+          {
+            "gravatar_id": "b8dbb1987e8e5318584865f880036796",
+            "position": 1.0,
+            "number": 8,
+            "votes": 3,
+            "created_at": "2010/01/22 17:56:29 -0800",
+            "comments": 10,
+            "body": "Maybe this? \r\n\r\n<http://www.htmldoc.org>",
+            "title": "PDF",
+            "updated_at": "2010/12/10 21:48:53 -0800",
+            "closed_at": null,
+            "user": "defunkt",
+            "labels": [
+              "feature"
+            ],
+            "state": "open"
+          }
+        ]
+      }}
+
+      stub_request(:get, 'http://github.com/api/v2/json/issues/list/schacon/showoff/open').to_return(:body => api_response)
+    end
+
+    it "should use the issues array to determine the size" do
+      repo = Github::Repo.new :name => 'showoff', :owner => 'schacon'
+      repo.number_of_open_issues.should eql(1)
+    end
+  end
+
+
+  describe '#number_of_open_pull_requests' do
+    before(:each) do
+      api_response = %Q{
+        {
+          "pulls": [
+            {
+              "state": "open",
+              "base": {
+                "label": "technoweenie:master",
+                "ref": "master",
+                "sha": "53397635da83a2f4b5e862b5e59cc66f6c39f9c6"
+              },
+              "head": {
+                "label": "smparkes:synchrony",
+                "ref": "synchrony",
+                "sha": "83306eef49667549efebb880096cb539bd436560"
+              },
+              "title": "Synchrony",
+              "position": 4.0,
+              "number": 15,
+              "votes": 0,
+              "comments": 4,
+              "diff_url": "https://github.com/technoweenie/faraday/pull/15.diff",
+              "patch_url": "https://github.com/technoweenie/faraday/pull/15.patch",
+              "labels": [],
+              "html_url": "https://github.com/technoweenie/faraday/pull/15",
+              "issue_created_at": "2010-10-04T12:39:18-07:00",
+              "issue_updated_at": "2010-11-04T16:35:04-07:00",
+              "created_at": "2010-10-04T12:39:18-07:00",
+              "updated_at": "2010-11-04T16:30:14-07:00"
+            }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/pulls/technoweenie/faraday/open').to_return(:body => api_response)
+    end
+
+    it "should use the pulls attribute to determine the size" do
+      repo = Github::Repo.new :name => 'faraday', :owner => 'technoweenie'
+      repo.number_of_open_pull_requests.should eql(1)
+    end
+  end
+
+  describe '#number_of_closed_pull_requests' do
+    before(:each) do
+      api_response = %Q{
+        {
+          "pulls": [
+            {
+              "state": "closed",
+              "base": {
+                "label": "technoweenie:master",
+                "ref": "master",
+                "sha": "53397635da83a2f4b5e862b5e59cc66f6c39f9c6"
+              },
+              "head": {
+                "label": "smparkes:synchrony",
+                "ref": "synchrony",
+                "sha": "83306eef49667549efebb880096cb539bd436560"
+              },
+              "title": "Synchrony",
+              "position": 4.0,
+              "number": 15,
+              "votes": 0,
+              "comments": 4,
+              "diff_url": "https://github.com/technoweenie/faraday/pull/15.diff",
+              "patch_url": "https://github.com/technoweenie/faraday/pull/15.patch",
+              "labels": [],
+              "html_url": "https://github.com/technoweenie/faraday/pull/15",
+              "issue_created_at": "2010-10-04T12:39:18-07:00",
+              "issue_updated_at": "2010-11-04T16:35:04-07:00",
+              "created_at": "2010-10-04T12:39:18-07:00",
+              "updated_at": "2010-11-04T16:30:14-07:00"
+            }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/pulls/technoweenie/faraday/closed').to_return(:body => api_response)
+    end
+
+    it "should use the pulls attribute to determine the size" do
+      repo = Github::Repo.new :name => 'faraday', :owner => 'technoweenie'
+      repo.number_of_closed_pull_requests.should eql(1)
+    end
+  end
 
   describe 'Repo#find_by_user_and_name' do
     it "should delegate to find" do

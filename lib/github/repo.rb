@@ -14,18 +14,6 @@ module Github
     
     ATTRIBUTES.each {|attr| attr_accessor attr }
 
-    def initialize(attributes = {}) 
-      our_attributes = attributes.symbolize_keys.slice(*ATTRIBUTES)
-
-      our_attributes.each_pair do |name, value|
-        self.send("#{name}=", value)
-      end
-    end
-
-    def user
-      owner
-    end
-
     def self.find(user, repo_name)
       res = get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name])
       new(res.parsed_response['repository'])
@@ -34,5 +22,34 @@ module Github
     def self.find_by_user_and_name(user, name)
       find(user, name)
     end
+
+    def initialize(attributes = {}) 
+      our_attributes = attributes.symbolize_keys.slice(*ATTRIBUTES)
+
+      our_attributes.each_pair do |name, value|
+        self.send("#{name}=", value)
+      end
+    end
+
+    def number_of_closed_issues
+      Repo.get("http://github.com/api/v2/json/issues/list/#{user}/#{name}/closed")['issues'].size
+    end
+
+    def number_of_open_issues
+      Repo.get("http://github.com/api/v2/json/issues/list/#{user}/#{name}/open")['issues'].size
+    end
+    
+    def number_of_open_pull_requests
+      Repo.get("http://github.com/api/v2/json/pulls/#{user}/#{name}/open")['pulls'].size
+    end
+
+    def number_of_closed_pull_requests
+      Repo.get("http://github.com/api/v2/json/pulls/#{user}/#{name}/closed")['pulls'].size
+    end
+
+    def user
+      owner
+    end
+
   end
 end
