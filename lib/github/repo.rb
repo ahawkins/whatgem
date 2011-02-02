@@ -16,7 +16,11 @@ module Github
 
     def self.find(user, repo_name)
       res = get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name])
-      new(res.parsed_response['repository'])
+      if res.response.is_a? Net::HTTPSuccess
+        new(res.parsed_response['repository'])
+      else
+        nil
+      end
     end
 
     def self.find_by_user_and_name(user, name)

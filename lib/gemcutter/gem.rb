@@ -6,10 +6,14 @@ module Gemcutter
     format :json
 
     attr_accessor :name, :info, :downloads, :project_uri, :homepage_uri, 
-      :documentation_uri, :source_code_uri, :authors
+      :documentation_uri, :source_code_uri
 
     def initialize(attributes = {}) 
-      attributes.each_pair do |name, value|
+      
+      attributes.symbolize_keys.slice(:name, :info, :downloads, 
+                                      :project_uri, :homepage_uri, 
+                                      :documentation_uri, :source_code_uri).
+                                      each_pair do |name, value|
         self.send("#{name}=", value)
       end
     end
@@ -40,7 +44,7 @@ module Gemcutter
       match_url = urls.select {|u| u =~ %r{https?://github.com}}.first
 
       if match_url
-        matches = match_url.match(%r{https?://github.com/(\w+)/(\w+)/?})
+        matches = match_url.match(%r{https?://github.com/([^/]+)/([^/]+)/?})
         @github_repo = Github::Repo.find(matches[1], matches[2])
       else
         nil
@@ -48,9 +52,12 @@ module Gemcutter
     end
 
     def self.find(name)
-      new(get('http://rubygems.org/api/v1/gems/%s.json' % [name]).parsed_response.slice('name',
-        'info', 'downloads', 'project_uri', 'homepage_uri', 
-        'documentation_uri',  'source_code_uri', 'authors'))
+      response = get("http://rubygems.org/api/v1/gems/#{name}.json")
+      if response.response.is_a?(Net::HTTPSuccess)
+        new(response.parsed_response)
+      else
+        nil
+      end
     end
   end
 end

@@ -34,6 +34,13 @@ describe Github::Repo do
 
       Github::Repo.find('Adman65', 'cashier').should eql(mock_repo)
     end
+
+    it "should return nil if the api returns anything other than success" do
+      stub_request(:get, 'http://github.com/api/v2/json/repos/show/Adman65/cashier').
+        to_return(:status => 4040)
+
+      Github::Repo.find('Adman65', 'cashier').should be_nil
+    end
   end
 
   describe "#new" do
