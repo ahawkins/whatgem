@@ -374,4 +374,58 @@ describe Github::Repo do
       subject.should have_tests
     end
   end
+
+  describe '#has_examples?' do
+    before(:each) do
+      commits = %Q{
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should have examples if there is an examples folder" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'examples', type: 'tree' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_examples
+    end
+  end
+
+  describe '#has_features?' do
+    before(:each) do
+      commits = %Q{
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should be true if there is a features directory" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'features', type: 'tree' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_features
+    end
+  end
 end

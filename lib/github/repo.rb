@@ -62,7 +62,15 @@ module Github
     def has_tests?
       current_tree.select { |file| file['name'] =~ /(spec|test)/i && file['type'] == 'tree' }.first.present?
     end
-      
+
+    def has_examples?
+      current_tree.select { |file| file['name'] =~ /examples/i && file['type'] == 'tree' }.first.present?
+    end
+
+    def has_features?
+      current_tree.select { |file| file['name'] =~ /features/i && file['type'] == 'tree' }.first.present?
+    end
+
     def user
       owner
     end
