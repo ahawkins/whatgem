@@ -246,4 +246,31 @@ describe Github::Repo do
       Github::Repo.find_by_user_and_name('Adman65', 'cashier')
     end
   end
+
+  describe '#has_readme?' do
+    before(:each) do
+      commits = %Q{
+        { tree: 'a6a09ebb4ca4b1461a'}
+      }
+
+      stub_request(:get, 'http;//github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should use the most recent commit to check the files" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'readme.md' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cahiser/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_readme
+    end
+  end
 end
