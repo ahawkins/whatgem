@@ -151,7 +151,6 @@ describe Github::Repo do
     end
   end
 
-
   describe '#number_of_open_pull_requests' do
     before(:each) do
       api_response = %Q{
@@ -250,10 +249,10 @@ describe Github::Repo do
   describe '#has_readme?' do
     before(:each) do
       commits = %Q{
-        { tree: 'a6a09ebb4ca4b1461a'}
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
       }
 
-      stub_request(:get, 'http;//github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
     end
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
@@ -268,9 +267,111 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cahiser/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
 
       subject.should have_readme
+    end
+
+
+    it "should be case insensitive" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'README.md' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_readme
+    end
+  end
+
+  describe '#has_license?' do
+    before(:each) do
+      commits = %Q{
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should use the most recent commit to check the files" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'license' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_license
+    end
+
+
+    it "should be case insensitive" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'LICENSE' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_license
+    end
+  end
+
+  describe '#has_tests?' do
+    before(:each) do
+      commits = %Q{
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should have tests if there is a specs folder" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'spec', type: 'tree' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_tests
+    end
+
+
+    it "should have tests if there is a test folder" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'test', type: 'tree' },
+            { name: 'Rakefile' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_tests
     end
   end
 end
