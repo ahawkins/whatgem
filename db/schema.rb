@@ -59,12 +59,12 @@ ActiveRecord::Schema.define(:version => 20110130033436) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "authentication_token"
-    t.string   "user_name"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
-  add_index "users", ["user_name"], :name => "index_users_on_user_name", :unique => true
+  add_index "users", ["name"], :name => "index_users_on_name", :unique => true
 
 end

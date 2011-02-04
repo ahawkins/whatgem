@@ -26,16 +26,11 @@ gem_names = %w(rspec rspec-rails cucumber cucumber-rails capybara
 gem_names.each do |name|
   puts "Fetching: #{name}"
 
-  gemcutter = Gemcutter::Gem.find name
-  if gemcutter.github_repo
-    repo = gemcutter.github_repo
-    user = User.find_or_create_by_user_name repo.user
-    ruby_gem = RubyGem.find_or_create_by_name name, :user =>  user, :github_url => repo.url, :description => gemcutter.info
-
-    ruby_gem.from_repo(repo)
-
-    ruby_gem.documentation_url = gemcutter.documentation_url
-
-    ruby_gem.save!
+  begin
+    RubyGem.create_from_gemcutter!(Gemcutter::Gem.find name)
+  rescue
+    # sometimes this happens from problems with the various
+    # apis. Sometimes the API requests return 404's 
+    # and things like that
   end
 end

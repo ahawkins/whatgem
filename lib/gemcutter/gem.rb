@@ -5,8 +5,10 @@ module Gemcutter
     include HTTParty
     format :json
 
-    attr_accessor :name, :info, :downloads, :project_uri, :homepage_uri, 
-      :documentation_uri, :source_code_uri
+    attr_accessor :name, :info, :version, :downloads, :version_downloads, 
+      :project_uri, :gem_uri, :homepage_uri, :wiki_uri, 
+      :documentation_uri, :mailing_list_uri, :source_code_uri, 
+      :bug_tracker_uri, :dependencies, :authors
 
     def self.find(name)
       response = get("http://rubygems.org/api/v1/gems/#{name}.json")
@@ -18,11 +20,7 @@ module Gemcutter
     end
 
     def initialize(attributes = {}) 
-      
-      attributes.symbolize_keys.slice(:name, :info, :downloads, 
-                                      :project_uri, :homepage_uri, 
-                                      :documentation_uri, :source_code_uri).
-                                      each_pair do |name, value|
+      attributes.each_pair do |name, value|
         self.send("#{name}=", value)
       end
     end

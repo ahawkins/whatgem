@@ -5,12 +5,12 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.trackable
       t.token_authenticatable
 
-      t.string :user_name, :unique => true
+      t.string :name, :unique => true
 
       t.timestamps
     end
 
-    add_index :users, :user_name, :unique => true
+    add_index :users, :name, :unique => true
     add_index :users, :authentication_token, :unique => true
   end
 

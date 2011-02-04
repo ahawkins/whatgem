@@ -11,8 +11,16 @@ class RubyGem < ActiveRecord::Base
 
   default_scope order('rating desc')
 
+  def self.named(name)
+    where('LOWER(name) = ?', name.downcase).first
+  end
+
   def self.from_repo(repo)
     new.from_repo(repo)
+  end
+
+  def self.create_from_gemcutter!(gemcutter)
+    new.from_gemcutter(gemcutter).save!
   end
 
   def to_s
@@ -46,13 +54,14 @@ class RubyGem < ActiveRecord::Base
   end
 
   def related_gems
-    RubyGem.where('name LIKE ? AND id != ?', "%#{name}%", id)
+    RubyGem.where('LOWER(name) LIKE ? AND id != ?', "%#{name.downcase}%", id)
   end
 
   def from_repo(repo)
     self.name = repo.name
     self.description = repo.description
     self.github_url = repo.url
+    self.user = User.find_or_create_by_name(repo.owner)
 
     self.number_of_closed_issues = repo.number_of_closed_issues
     self.number_of_open_issues = repo.number_of_open_issues
@@ -65,6 +74,12 @@ class RubyGem < ActiveRecord::Base
     self.has_tests = repo.has_tests?
     self.has_examples = repo.has_examples?
     self.has_features = repo.has_features?
+    self
+  end
+
+  def from_gemcutter(gemcutter)
+    self.from_repo(gemcutter.github_repo) if gemcutter.github_repo
+    self.documentation_url = gemcutter.documentation_url
     self
   end
 

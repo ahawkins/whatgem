@@ -1,0 +1,2 @@
+development: 'localhost:6379/whatgem-development'
+test: 'localhost:6379/whatgem-test'

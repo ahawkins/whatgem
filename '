@@ -1,0 +1,17 @@
+require 'spec_helper'
+
+describe ImportDependencyJob do
+
+  it "should import runtime dependencies" do
+    gemcutter = mock_model(Gemcutter::Gem, :dependencies => {
+      'runtime' => [{'name' => 'activesupport'}], 'development' => [{}]
+    })
+
+    mock_active_support = mock_model(Gemcutter::Gem)
+    Gemcutter::Gem.should_receive(:new).with('activesupport').and_return(mock_active_support)
+
+    RubyGem.should_receive(:create_from_gemcutter!).with(mock_active_support)
+  end
+
+  it "should import development dependencies"
+end

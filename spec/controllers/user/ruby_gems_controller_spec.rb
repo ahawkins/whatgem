@@ -6,5 +6,18 @@ describe User::RubyGemsController do
          to_return(:status => 200, :body => "{repositories: []}", :headers => {})
   end
 
-  it_should_require_a_user_for :get => :import
+  it "should require a user to import gems" do
+    get :import
+    response.should_not be_success
+  end
+
+  it "should require a user to create  gems" do
+    post :create
+    response.should_not be_success
+  end
+
+  it "shoudl require a user to update a gem" do
+    put :update, :id => 1
+    response.should_not be_success
+  end
 end

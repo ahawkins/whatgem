@@ -3,7 +3,7 @@ require 'machinist/active_record'
 range = (1..100).to_a
 
 User.blueprint do
-  user_name { Forgery::GithubUserName.name }
+  name { Forgery::GithubUserName.name }
 end
 
 RubyGem.blueprint do
