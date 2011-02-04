@@ -59,3 +59,17 @@ a {
     margin: 8px 10px; }
   .error_messages ul {
     margin: 0; }
+
+table#gems {
+  width: 100%; }
+
+#gem-tags > fieldset > legend {
+  display: none; }
+#gem-tags > fieldset > ol {
+  padding: 0;
+  float: none;
+  width: 100%; }
+  #gem-tags > fieldset > ol > li {
+    display: inline-block; }
+    #gem-tags > fieldset > ol > li label {
+      margin-right: 10px; }

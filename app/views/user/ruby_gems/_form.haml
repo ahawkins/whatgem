@@ -4,8 +4,19 @@
   = form.inputs do
     = form.input :name, :input_html => {:class => 'name'}
     = form.input :description
-    = form.input :homepage
+    = form.input :github_url, :label => "Github URL"
     = form.input :tag_list, :collection => available_tags, :as => :check_boxes
+
+  = form.inputs do 
+    = form.input :number_of_open_issues, :as => :hidden
+    = form.input :number_of_closed_issues, :as => :hidden
+    = form.input :number_of_open_pull_requests, :as => :hidden
+    = form.input :number_of_closed_pull_requests, :as => :hidden
+    = form.input :has_readme, :as => :hidden
+    = form.input :has_license, :as => :hidden
+    = form.input :has_tests, :as => :hidden
+    = form.input :has_features, :as => :hidden
+    = form.input :has_examples, :as => :hidden
 
   = form.buttons do 
     = form.commit_button

@@ -8,6 +8,15 @@ module Gemcutter
     attr_accessor :name, :info, :downloads, :project_uri, :homepage_uri, 
       :documentation_uri, :source_code_uri
 
+    def self.find(name)
+      response = get("http://rubygems.org/api/v1/gems/#{name}.json")
+      if response.response.is_a?(Net::HTTPSuccess)
+        new(response.parsed_response)
+      else
+        nil
+      end
+    end
+
     def initialize(attributes = {}) 
       
       attributes.symbolize_keys.slice(:name, :info, :downloads, 
@@ -34,30 +43,23 @@ module Gemcutter
     def source_code_url
       source_code_uri
     end
-    alias :github_url :source_code_uri
 
     def github_repo
       return @github_repo if @github_repo
 
-      urls = [github_url, homepage].reject(&:nil?)
-
-      match_url = urls.select {|u| u =~ %r{https?://github.com}}.first
-
-      if match_url
-        matches = match_url.match(%r{https?://github.com/([^/]+)/([^/]+)/?})
+      if github_url
+        matches = github_url.match(%r{https?://github.com/([^/]+)/([^/]+)/?})
         @github_repo = Github::Repo.find(matches[1], matches[2])
       else
         nil
       end
     end
 
-    def self.find(name)
-      response = get("http://rubygems.org/api/v1/gems/#{name}.json")
-      if response.response.is_a?(Net::HTTPSuccess)
-        new(response.parsed_response)
-      else
-        nil
-      end
+    private
+    def github_url
+      urls = [source_code_url, homepage_url, project_url].compact
+
+      urls.select {|u| u =~ %r{https?://github.com}}.first
     end
   end
 end

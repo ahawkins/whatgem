@@ -77,3 +77,5 @@ WebMock.disable_net_connect!(:allow_localhost => true)
 After do
   WebMock.reset!
 end
+
+require 'blueprints'

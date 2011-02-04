@@ -32,16 +32,9 @@ class User < ActiveRecord::Base
   end
 
   def build_gems_from_github_and_rubygems
-    possible_gems = repos.map { |repo| RubyGem.new :name => repo.name, :description => repo.description }
-    possible_gems = possible_gems.select do |repo|
-      begin
-        gemcutter_gem = Gemcutter::Gem.find(repo.name)
-        repo.homepage = gemcutter_gem.homepage
-        true
-      rescue
-        false
-      end
-    end
-    possible_gems.reject {|gem| RubyGem.exists?(['LOWER(name) = ?', gem.name.downcase]) }
+    possible_gems = repos.select(&:has_gemspec?)
+    possible_gems = possible_gems.reject { |r| RubyGem.exists?(['LOWER(name) = ?', r.name.downcase]) }
+    possible_gems = possible_gems.select { |r| Gemcutter::Gem.find(r.name).present? }
+    possible_gems.map {|repo| RubyGem.from_repo(repo)}  
   end
 end

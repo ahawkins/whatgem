@@ -52,23 +52,33 @@ module Github
     end
 
     def has_readme?
+      return false if current_tree.blank?
       current_tree.select { |file| file['name'] =~ /readme/i }.first.present?
     end
 
     def has_license?
+      return false if current_tree.blank?
       current_tree.select { |file| file['name'] =~ /license/i }.first.present?
     end
 
     def has_tests?
+      return false if current_tree.blank?
       current_tree.select { |file| file['name'] =~ /(spec|test)/i && file['type'] == 'tree' }.first.present?
     end
 
     def has_examples?
+      return false if current_tree.blank?
       current_tree.select { |file| file['name'] =~ /examples/i && file['type'] == 'tree' }.first.present?
     end
 
     def has_features?
+      return false if current_tree.blank?
       current_tree.select { |file| file['name'] =~ /features/i && file['type'] == 'tree' }.first.present?
+    end
+
+    def has_gemspec?
+      return false if current_tree.blank?
+      current_tree.select { |file| file['name'] =~ /gemspec/i  }.first.present?
     end
 
     def user

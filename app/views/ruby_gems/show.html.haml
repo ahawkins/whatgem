@@ -1,0 +1,64 @@
+- title @ruby_gem
+
+- if !user_signed_in?
+  = link_to "Sign in with Github to edit #{@ruby_gem}", user_omniauth_authorize_path(:github)
+
+#rating
+  %p= number_to_percentage @ruby_gem.rating, :precision => 2
+
+#description
+  = simple_format @ruby_gem.description
+
+#metrics
+  %h2 Metrics
+  %table
+    %tbody
+      %tr
+        %td Has Readme?
+        %td= @ruby_gem.has_readme?
+      %tr
+        %td Has License?
+        %td= @ruby_gem.has_license?
+      %tr
+        %td Has Unit Tests?
+        %td= @ruby_gem.has_tests?
+      %tr
+        %td Has Features?
+        %td= @ruby_gem.has_features?
+      %tr
+        %td Has Examples?
+        %td= @ruby_gem.has_examples?
+      %tr
+        %td Has Documentation?
+        %td= @ruby_gem.has_documentation?
+      %tr
+        %td Closed Issues
+        %td= number_to_percentage @ruby_gem.closed_issue_percentage, :precision => 2
+      %tr
+        %td Merged Pull Requests
+        %td= number_to_percentage @ruby_gem.merged_pull_request_percentage, :precision => 2
+#links
+  %h2 Related Links
+  = link_to_github @ruby_gem
+  = link_to_test_results @ruby_gem
+  = link_to_ruby_gems @ruby_gem
+  - if @ruby_gem.has_documentation?
+    = link_to 'Documentation', @ruby_gem.documentation_url
+
+- if @ruby_gem.related_gems
+  #related
+    %h2 Related Gems
+    %p= @ruby_gem.related_gems.map {|r| link_to r, ruby_gem_path(r)}.to_sentence.html_safe
+
+#tags
+  %h2 Tags
+  - if user_signed_in?
+    = semantic_form_for [:user, @ruby_gem], :remote => true do |f|
+      = f.inputs do
+        = f.input :tag_list, :as => :check_boxes, :collection => available_tags, :wrapper_html => {:id => 'gem-tags'}
+  - else
+    %p= @ruby_gem.tags.to_sentence
+
+#comments
+  %h2 Comments
+  %p Place Holder: Jon Fill this in.

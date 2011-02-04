@@ -14,4 +14,8 @@ $(function(){
   $("#import-gems form").live('submit', function(){
     $(this).addClass('submitted');
   });
+
+  $("#tags form :checkbox").change(function(){
+    $(this).closest('form').submit();
+  });
 });

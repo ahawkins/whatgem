@@ -2,3 +2,4 @@ cashiser:
   name: cashier
   description: Tag based caching
   user: Adman65
+  github_url: 'https://github.com/Adman65/cashier'

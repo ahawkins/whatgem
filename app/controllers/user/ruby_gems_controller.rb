@@ -13,4 +13,12 @@ class User::RubyGemsController < ApplicationController
 
     respond_with(@ruby_gem)
   end
+
+  def update
+    @ruby_gem = RubyGem.find params[:id]
+
+    @ruby_gem.update_attributes(params[:ruby_gem])
+
+    respond_with(@ruby_gem)
+  end
 end

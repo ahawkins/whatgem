@@ -3,5 +3,5 @@ When /I debug/ do
 end
 
 When /I wait/ do
-  sleep 1
+  sleep 1.5
 end

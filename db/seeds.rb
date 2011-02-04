@@ -19,7 +19,9 @@ gem_names = %w(rspec rspec-rails cucumber cucumber-rails capybara
           thin thor maruku RedCloth rake BlueCloth
           paperclip machinist factory_girl shoulda
           mongo bson mongoid mongo_mapper selenium-webdriver
-          webrat chef puppet)
+          webrat chef puppet rspec-expectations rspec-core rspec-mocks
+          autotest remarkable remarkable_rails remarkable_activerecord
+          remarkable_activemodel)
 
 gem_names.each do |name|
   puts "Fetching: #{name}"
@@ -28,6 +30,12 @@ gem_names.each do |name|
   if gemcutter.github_repo
     repo = gemcutter.github_repo
     user = User.find_or_create_by_user_name repo.user
-    RubyGem.find_or_create_by_name name, :user =>  user, :homepage => repo.url, :description => gemcutter.info
+    ruby_gem = RubyGem.find_or_create_by_name name, :user =>  user, :github_url => repo.url, :description => gemcutter.info
+
+    ruby_gem.from_repo(repo)
+
+    ruby_gem.documentation_url = gemcutter.documentation_url
+
+    ruby_gem.save!
   end
 end

@@ -428,4 +428,30 @@ describe Github::Repo do
       subject.should have_features
     end
   end
+  
+  describe '#has_gemspect?' do
+    before(:each) do
+      commits = %Q{
+        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
+    end
+
+    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    it "should be true if there is a features directory" do
+      tree = %Q{
+        {
+          tree: [
+            { name: 'Gemspec' }
+          ]
+        }
+      }
+
+      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+
+      subject.should have_gemspec
+    end
+  end
 end

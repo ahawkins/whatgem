@@ -17,7 +17,7 @@ gem 'resque'
 gem "oa-oauth", :require => "omniauth/oauth"
 gem 'jquery-rails'
 gem 'acts-as-taggable-on'
-    
+
 group :development do
   gem 'wirble'
   gem 'hirb'
@@ -28,6 +28,8 @@ end
 
 group :test, :development do 
   gem "rspec-rails"
+  gem 'machinist'
+  gem 'forgery'
 end
 
 group :test do
