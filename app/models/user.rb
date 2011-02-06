@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
     else # Create an user with a stub password. 
       User.create! do |user|
         user.name = data['nickname']
+        user.gravatar_id = access_token['extra']['user_hash']['gravatar_id']
       end
     end
   end

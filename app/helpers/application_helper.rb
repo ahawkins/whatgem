@@ -6,4 +6,9 @@ module ApplicationHelper
       hash
     end
   end
+
+  def gravatar_image(user, options = {})
+    path = "http://www.gravatar.com/avatar/#{user.gravatar_id}"
+    image_tag(path, options)
+  end
 end

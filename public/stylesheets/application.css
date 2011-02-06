@@ -72,4 +72,25 @@ table#gems {
   #gem-tags > fieldset > ol > li {
     display: inline-block; }
     #gem-tags > fieldset > ol > li label {
-      margin-right: 10px; }
+      margin-right: 10px;
+      width: 125px; }
+
+#comments .comment {
+  overflow: auto;
+  margin: 10px 0; }
+  #comments .comment .gravatar {
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    margin-bottom: 10px; }
+  #comments .comment p.meta {
+    margin-top: 0; }
+#comments #new_comment #comment_text_input label {
+  float: none;
+  margin-bottom: 5px; }
+#comments #new_comment #comment_text {
+  width: 60%;
+  height: 60px; }
+#comments #new_comment fieldset.buttons {
+  padding-left: 10px; }

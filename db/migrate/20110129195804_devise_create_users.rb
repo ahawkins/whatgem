@@ -5,6 +5,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.trackable
       t.token_authenticatable
 
+      t.string :gravatar_id
+
       t.string :name, :unique => true
 
       t.timestamps

@@ -15,7 +15,11 @@ $(function(){
     $(this).addClass('submitted');
   });
 
+  // changing tags automatically updates the gem
   $("#tags form :checkbox").change(function(){
     $(this).closest('form').submit();
   });
+
+  // make comment box on gem page elastic
+  $('#comment_text').elastic();
 });

@@ -61,4 +61,15 @@
 
 #comments
   %h2 Comments
-  %p Place Holder: Jon Fill this in.
+
+  - @ruby_gem.comments.each do |comment|
+    .comment{ :id => dom_id(comment) }
+      = gravatar_image(comment.user, :class => 'gravatar') if comment.user.gravatar_id.present?
+      %p.meta
+        = comment.user
+        on
+        = l comment.created_at
+      = simple_format comment.text
+
+  - if user_signed_in?
+    = render :partial => 'comments/form', :locals => { :comment => [@ruby_gem, @comment] }

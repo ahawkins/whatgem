@@ -1,0 +1,6 @@
+= semantic_form_for comment do |form|
+  = form.inputs do
+    = form.input :text, :label => 'Add yours', :required => false
+
+  = form.buttons do
+    = form.commit_button 'Post'

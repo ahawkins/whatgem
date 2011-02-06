@@ -1,6 +1,9 @@
-development:
+development:  &test
   client_id: '1a4bf9835c581055d9cf'
   secret: '7a1dc633cbaea6aed55356ceddb090ec196dfb5f'
+
+test:
+ <<: *test
 
 production:
   client_id: 'bcf90f6a56b821e32b47'

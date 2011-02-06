@@ -10,7 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110130033436) do
+ActiveRecord::Schema.define(:version => 20110206101759) do
+
+  create_table "comments", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "ruby_gem_id"
+    t.text     "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "ruby_gems", :force => true do |t|
     t.string   "name"
@@ -59,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20110130033436) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "authentication_token"
+    t.string   "gravatar_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"

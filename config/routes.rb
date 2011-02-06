@@ -3,9 +3,9 @@ Whatgem::Application.routes.draw do
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
-  resources :ruby_gems, :only => :show
-
-  #mount Resque::Server.new, :at => "/resque"
+  resources :ruby_gems, :only => :show do
+    resources :comments, :only => :create
+  end
 
   namespace :user do
     root :to => 'dashboards#show'

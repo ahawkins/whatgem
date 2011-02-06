@@ -14,7 +14,8 @@ test: &test
   # username: adam
   # database: whatgem_test
   # host: localhost
-  database: /Volumes/ram/test.sqlite3
+  database: db/test.sqlite3
+  # database: /Volumes/ram/test.sqlite3
   # pool: 5
   # timeout: 5000
 

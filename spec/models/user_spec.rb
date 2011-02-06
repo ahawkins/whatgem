@@ -14,13 +14,19 @@ describe User do
 
   describe 'User#find_for_github_oauth' do
     it "should return the user if the user name exists" do
-      actual_user = User.find_for_github_oauth('user_info' => {'nickname' => 'Adman65'})
+      actual_user = User.find_for_github_oauth(
+        'user_info' => {'nickname' => 'Adman65'},
+        'extra' => {'user_hash' => {'gravatar_id' => '1'}}
+      )
       users(:Adman65).should eql(actual_user)
     end
 
     it "should make new user if the user name does not exist" do
       expect { 
-        User.find_for_github_oauth('user_info' => {'nickname' => 'datapimp'}) 
+        User.find_for_github_oauth(
+          'user_info' => {'nickname' => 'datapimp'},
+          'extra' => {'user_hash' => {'gravatar_id' => '1'}}
+        ) 
       }.to change(User, :count).by(1)
     end
   end
