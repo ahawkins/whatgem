@@ -28,7 +28,9 @@ gem_names.each do |name|
 
   begin
     RubyGem.create_from_gemcutter!(Gemcutter::Gem.find name)
-  rescue
+  rescue Exception => e
+    puts "#{name} raised an error"
+    puts e
     # sometimes this happens from problems with the various
     # apis. Sometimes the API requests return 404's 
     # and things like that
