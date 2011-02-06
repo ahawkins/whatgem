@@ -1,0 +1,7 @@
+development:
+  client_id: '1a4bf9835c581055d9cf'
+  secret: '7a1dc633cbaea6aed55356ceddb090ec196dfb5f'
+
+production:
+  client_id: 'bcf90f6a56b821e32b47'
+  secret: 'b8e5152d80ccc230cea3a8c00fe8d7b5a429091c'
