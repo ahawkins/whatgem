@@ -5,7 +5,8 @@ Whatgem::Application.routes.draw do
 
   resources :ruby_gems, :only => :show
 
-  mount Resque::Server.new, :at => "/resque"
+  #mount Resque::Server.new, :at => "/resque"
+
   namespace :user do
     root :to => 'dashboards#show'
     resources :ruby_gems do
