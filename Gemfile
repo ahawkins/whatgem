@@ -17,7 +17,10 @@ gem 'resque'
 gem "oa-oauth", :require => "omniauth/oauth"
 gem 'jquery-rails'
 gem 'acts-as-taggable-on'
-gem "dalli"
+
+group :production do
+  gem "dalli"
+end
 
 group :development do
   gem 'wirble'
