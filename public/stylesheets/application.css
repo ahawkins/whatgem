@@ -63,6 +63,9 @@ a {
 table#gems {
   width: 100%; }
 
+#rating #votes, #rating p {
+  display: inline-block; }
+
 #gem-tags > fieldset > legend {
   display: none; }
 #gem-tags > fieldset > ol {

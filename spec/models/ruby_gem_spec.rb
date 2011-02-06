@@ -4,6 +4,7 @@ describe RubyGem do
   fixtures(:ruby_gems)
 
   it { should have_many(:comments).dependent(:destroy) }
+  it { should have_many(:votes).dependent(:destroy) }
 
   it { should validate_presence_of(:name, :description, :github_url) }
 

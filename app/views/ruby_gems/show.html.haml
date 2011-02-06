@@ -4,6 +4,12 @@
   = link_to "Sign in with Github to edit #{@ruby_gem}", user_omniauth_authorize_path(:github)
 
 #rating
+  #votes
+    #vote-up
+      = button_to 'Vote Up', up_ruby_gem_votes_path(@ruby_gem), :remote => true
+    #vote-down
+      = button_to 'Vote Down', down_ruby_gem_votes_path(@ruby_gem), :remote => true
+
   %p= number_to_percentage @ruby_gem.rating, :precision => 2
 
 #description

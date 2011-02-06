@@ -5,6 +5,13 @@ Whatgem::Application.routes.draw do
 
   resources :ruby_gems, :only => :show do
     resources :comments, :only => :create
+
+    resources :votes, :only => [] do
+      collection do
+        post 'up'
+        post 'down'
+      end
+    end
   end
 
   namespace :user do

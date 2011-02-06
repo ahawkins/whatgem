@@ -1,5 +1,6 @@
 class RubyGem < ActiveRecord::Base
   has_many :comments, :dependent => :destroy
+  has_many :votes, :dependent => :destroy
   belongs_to :user
 
   validates :name, :description, :github_url, :presence => true

@@ -1,4 +1,3 @@
-@wip
 Feature: Related gems
 
   Scenario: A gem has related gems
