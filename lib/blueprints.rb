@@ -25,5 +25,5 @@ RubyGem.blueprint do
   github_url { "https://github.com/#{name}/#{name}"}
   github_url { "https://rdoc.info/#{name}/#{name}"}
 
-  user { User.make }
+  user { User.find_or_create_by_name!(Forgery::GithubUserName.name) }
 end

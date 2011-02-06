@@ -45,7 +45,7 @@
   - if @ruby_gem.has_documentation?
     = link_to 'Documentation', @ruby_gem.documentation_url
 
-- if @ruby_gem.related_gems
+- if @ruby_gem.related_gems.present?
   #related
     %h2 Related Gems
     %p= @ruby_gem.related_gems.map {|r| link_to r, ruby_gem_path(r)}.to_sentence.html_safe
