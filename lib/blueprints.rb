@@ -1,5 +1,14 @@
 require 'machinist/active_record'
 
+class ActiveRecord::Base
+  def self.random
+    if (c = count) != 0
+      first(:offset => rand(c))
+    end
+  end
+end
+
+
 range = (1..100).to_a
 
 User.blueprint do
@@ -26,4 +35,10 @@ RubyGem.blueprint do
   github_url { "https://rdoc.info/#{name}/#{name}"}
 
   user { User.find_or_create_by_name!(Forgery::GithubUserName.name) }
+end
+
+Comment.blueprint do
+  user { User.random }
+  ruby_gem { RubyGem.random }
+  text { Forgery::LoremIpsum.paragraphs(2) }
 end
