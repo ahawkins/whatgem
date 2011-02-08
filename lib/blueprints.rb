@@ -42,3 +42,16 @@ Comment.blueprint do
   ruby_gem { RubyGem.random }
   text { Forgery::LoremIpsum.paragraphs(2) }
 end
+
+Vote.blueprint do
+  user { User.random }
+  ruby_gem { RubyGem.random }
+end
+
+Vote.blueprint(:down) do
+  up { false }
+end
+
+Vote.blueprint(:up) do
+  up { true }
+end

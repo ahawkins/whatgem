@@ -12,4 +12,10 @@ task :populate => :environment do
   end
 
   100.times { Comment.make }
+
+  RubyGem.all.each do |ruby_gem|
+    User.all.each do |user|
+      Vote.make :up => (rand(1) == 1), :user => user, :ruby_gem => ruby_gem
+    end
+  end
 end

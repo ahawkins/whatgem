@@ -30,24 +30,24 @@ class RubyGem < ActiveRecord::Base
   end
 
   def closed_issue_percentage
-    self.number_of_closed_issues ||= 0
-    self.number_of_open_issues ||= 0
+    self.number_of_closed_issues = 0 if number_of_closed_issues.blank?
+    self.number_of_open_issues = 0 if number_of_open_issues.blank?
 
     if number_of_closed_issues + number_of_open_issues == 0
-      100
+      1.0
     else
-      (number_of_closed_issues.to_f / (number_of_closed_issues + number_of_open_issues).to_f) * 100
+      (number_of_closed_issues.to_f / (number_of_closed_issues + number_of_open_issues).to_f)
     end
   end
 
   def merged_pull_request_percentage
-    self.number_of_closed_pull_requests ||= 0
-    self.number_of_open_pull_requests ||= 0
+    self.number_of_closed_pull_requests = 0 if number_of_closed_pull_requests.blank?
+    self.number_of_open_pull_requests = 0 if number_of_open_pull_requests.blank?
 
     if number_of_closed_pull_requests + number_of_open_pull_requests == 0
-      100
+      1.0
     else
-      (number_of_closed_pull_requests.to_f / (number_of_closed_pull_requests + number_of_open_pull_requests).to_f) * 100
+      (number_of_closed_pull_requests.to_f / (number_of_closed_pull_requests + number_of_open_pull_requests).to_f)
     end
   end
 
@@ -85,7 +85,14 @@ class RubyGem < ActiveRecord::Base
     self
   end
 
-  private
+  def up_vote_percentage
+    if votes.count == 0
+      1.0
+    else
+      (votes.up.count.to_f / votes.count.to_f)
+    end
+  end
+
   def calculate_rating
     base = 0
 
@@ -101,12 +108,19 @@ class RubyGem < ActiveRecord::Base
     # 5% for pull request rate
     # 10 remaning precent for votes
 
-    base += (0.05 * (closed_issue_percentage / 100))
-    base += (0.05 * (merged_pull_request_percentage / 100))
+    base += (0.05 * closed_issue_percentage)
+    base += (0.05 * merged_pull_request_percentage)
 
     # Assume the votes are at 75% approval for now
-    base += (0.1 * 0.75)
+    base += (0.1 * up_vote_percentage)
 
-    self.rating = base * 100
+    # Extreas
+    base += (0.005 * comments.count)
+
+    # Ensure gems with a boat load of extra
+    # content don't overflow the rankings
+    base = 100.0 if base > 100.0
+    
+    self.rating = base
   end
 end
