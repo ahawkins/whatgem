@@ -20,3 +20,11 @@ Then /^"([^"]*)" should be tagged with "([^"]*)"$/ do |name, tag_string|
   end
 end
 
+Then /^"([^"]*)" and "([^"]*)" should be related$/ do |gem_name1, gem_name2|
+  gem1 = RubyGem.find_by_name!(gem_name1)
+  gem2 = RubyGem.find_by_name!(gem_name2)
+
+  gem1.related_gems.should include(gem2)
+  gem2.related_gems.should include(gem1)
+end
+

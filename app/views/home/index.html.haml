@@ -1,15 +1,18 @@
-- title 'What.RubyGems.org'
-
-= link_to "Sign in with Github", user_omniauth_authorize_path(:github)
+- title 'What Gem'
 
 %h2 Top Gems
 
 %table#gems
+  %th
+    %tr
+      %th Gem
+      %th Description
+      %th Rating
   %tbody
     - @ruby_gems.each do |ruby_gem|
       %tr
         %td.name= link_to ruby_gem, ruby_gem_path(ruby_gem)
-        %td.author= ruby_gem.user
-        %td.rating= number_to_percentage ruby_gem.rating * 100, :precision => 2
-        %td.github= link_to_github ruby_gem
-        %td.ruby_gems= link_to_ruby_gems ruby_gem
+        %td.description= truncate ruby_gem.description, :length => 75
+        %td.rating= number_to_percentage ruby_gem.rating * 100, :precision => 1
+
+= will_paginate @ruby_gems

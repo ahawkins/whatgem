@@ -17,6 +17,8 @@ gem 'resque'
 gem "oa-oauth", :require => "omniauth/oauth"
 gem 'jquery-rails'
 gem 'acts-as-taggable-on'
+gem 'mechanize'
+gem 'will_paginate'
 
 group :production do
   gem "dalli"

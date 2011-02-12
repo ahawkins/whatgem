@@ -1,0 +1,10 @@
+#rating
+  #votes
+    #vote-up
+      = button_to 'Vote Up', up_ruby_gem_votes_path(ruby_gem), :remote => true
+    #vote-down
+      = button_to 'Vote Down', down_ruby_gem_votes_path(ruby_gem), :remote => true
+    %p#count
+      = ruby_gem.votes.up.count
+
+  %p= number_to_percentage ruby_gem.rating * 100, :precision => 2

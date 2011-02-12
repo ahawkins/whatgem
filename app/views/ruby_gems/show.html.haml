@@ -1,18 +1,10 @@
 - title @ruby_gem
 
 - if !user_signed_in?
-  = link_to "Sign in with Github to edit #{@ruby_gem}", user_omniauth_authorize_path(:github)
+  = link_to "Sign in with Github", user_omniauth_authorize_path(:github)
 
-#rating
-  #votes
-    #vote-up
-      = button_to 'Vote Up', up_ruby_gem_votes_path(@ruby_gem), :remote => true
-    #vote-down
-      = button_to 'Vote Down', down_ruby_gem_votes_path(@ruby_gem), :remote => true
-    #votes
-      = @ruby_gem.votes.up.count
 
-  %p= number_to_percentage @ruby_gem.rating, :precision => 2
+= render :partial => 'rating', :locals => {:ruby_gem => @ruby_gem}
 
 #description
   = simple_format @ruby_gem.description
@@ -61,7 +53,7 @@
 #tags
   %h2 Tags
   - if user_signed_in?
-    = semantic_form_for [:user, @ruby_gem], :remote => true do |f|
+    = semantic_form_for @ruby_gem, :remote => true do |f|
       = f.inputs do
         = f.input :tag_list, :as => :check_boxes, :collection => available_tags, :wrapper_html => {:id => 'gem-tags'}
   - else
@@ -76,7 +68,7 @@
       %p.meta
         = comment.user
         on
-        = l comment.created_at
+        = comment.created_at.strftime('%Y-%m-%d %H:%m')
       = simple_format comment.text
 
   - if user_signed_in?

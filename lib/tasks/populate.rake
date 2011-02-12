@@ -1,5 +1,5 @@
 desc "Populate the db with some demo data" 
-task :populate => :environment do
+task :populate => [:environment, 'db:setup'] do
   require 'blueprints'
 
   15.times do

@@ -18,3 +18,4 @@ module RSpec::Rails
     end
   end
 end
+

@@ -6,33 +6,7 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 
+available_tags = %w(searching encryption orm api testing engine css background 
+                    caching deployment email development javascript authorization markup admin)
 
-gem_names = %w(rspec rspec-rails cucumber cucumber-rails capybara
-          devise cancan authlogic passenger mongrel
-          ZenTest haml sass will_paginate sunspot faker
-          simple_form radiant clearance meta_search forgery
-          memcached-northscale webmock thinking-sphinx
-          redis resque capistrano rcov simplecov
-          jeweler mysql pg sqlite3 mail viewpoint
-          vagrant warden watir sinatra bundler
-          sproutcore delayed_job activemerchant guides
-          thin thor maruku RedCloth rake BlueCloth
-          paperclip machinist factory_girl shoulda
-          mongo bson mongoid mongo_mapper selenium-webdriver
-          webrat chef puppet rspec-expectations rspec-core rspec-mocks
-          autotest remarkable remarkable_rails remarkable_activerecord
-          remarkable_activemodel)
-
-gem_names.each do |name|
-  puts "Fetching: #{name}"
-
-  begin
-    RubyGem.create_from_gemcutter!(Gemcutter::Gem.find name)
-  rescue Exception => e
-    puts "#{name} raised an error"
-    puts e
-    # sometimes this happens from problems with the various
-    # apis. Sometimes the API requests return 404's 
-    # and things like that
-  end
-end
+available_tags.map {|tag| ActsAsTaggableOn::Tag.create(:name => tag) }

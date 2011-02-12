@@ -1,0 +1,37 @@
+namespace :ruby_gems do
+  desc "Scrape a list of all gem names from RubyGems.org and add them to the processing queues"
+  task :scrape => :environment do
+    agent = Mechanize.new
+
+    ('A'..'Z').each do |letter|
+      puts "Fetching #{letter}'s Index"
+
+      page = agent.get "http://rubygems.org/gems?letter=#{letter}"
+      last_page_link = page.search(%Q{.//div[contains(@class, 'pagination')]/a[last()-1]}).first
+      total_pages = last_page_link.attributes['href'].value.match(/page=(\d+)/)[1]
+
+      puts "Found #{total_pages} pages"
+
+      (1..total_pages.to_i).each do |current_page|
+        puts "Processing #{letter} (#{current_page}/#{total_pages})"
+
+        url = "http://rubygems.org/gems?letter=#{letter}&page=#{current_page}"
+        page = agent.get url
+
+        page.search(".//div[contains(@class, 'gems')]/ol/li").each do |li|
+          link_text = li.search('a/strong').text
+          gem_name = link_text.match(/(.+)\s\(/)[1]
+          downloads = li.search(%Q{div[@class='downloads']/strong}).text
+
+          if downloads.to_i >= 1000 && RubyGem.named(gem_name).blank?
+            puts "#{gem_name} added to import queue"
+            Resque.enqueue(ImportGemJob, gem_name)
+          elsif RubyGem.named(gem_name)
+            puts "#{gem_name} scheduled for update"
+            Resque.enqueue(UpdateRatingJob, gem_name)
+          end
+        end
+      end
+    end
+  end
+end

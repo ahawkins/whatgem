@@ -1,6 +1,8 @@
 require 'httparty'
 
 module Github
+  class RateLimitExceeded < RuntimeError ; end 
+
   class Repo
     include HTTParty
     format :json
@@ -15,12 +17,8 @@ module Github
     ATTRIBUTES.each {|attr| attr_accessor attr }
 
     def self.find(user, repo_name)
-      res = get('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name])
-      if res.response.is_a? Net::HTTPSuccess
-        new(res.parsed_response['repository'])
-      else
-        nil
-      end
+      res = get_with_success('http://github.com/api/v2/json/repos/show/%s/%s' % [user, repo_name])
+      new(res.parsed_response['repository'])
     end
 
     def self.find_by_user_and_name(user, name)
@@ -36,19 +34,19 @@ module Github
     end
 
     def number_of_closed_issues
-      res = Repo.get("http://github.com/api/v2/json/issues/list/#{user}/#{name}/closed")['issues'].size
+      res = Repo.get_with_success("http://github.com/api/v2/json/issues/list/#{user}/#{name}/closed")['issues'].size
     end
 
     def number_of_open_issues
-      Repo.get("http://github.com/api/v2/json/issues/list/#{user}/#{name}/open")['issues'].size
+      Repo.get_with_success("http://github.com/api/v2/json/issues/list/#{user}/#{name}/open")['issues'].size
     end
     
     def number_of_open_pull_requests
-      Repo.get("http://github.com/api/v2/json/pulls/#{user}/#{name}/open")['pulls'].size
+      Repo.get_with_success("http://github.com/api/v2/json/pulls/#{user}/#{name}/open")['pulls'].size
     end
 
     def number_of_closed_pull_requests
-      Repo.get("http://github.com/api/v2/json/pulls/#{user}/#{name}/closed")['pulls'].size
+      Repo.get_with_success("http://github.com/api/v2/json/pulls/#{user}/#{name}/closed")['pulls'].size
     end
 
     def has_readme?
@@ -81,13 +79,25 @@ module Github
 
     private
     def commits
-      Repo.get("http://github.com/api/v2/json/commits/list/#{user}/#{name}/master")['commits']
+      Repo.get_with_success("http://github.com/api/v2/json/commits/list/#{user}/#{name}/master")['commits']
     end
     
     def current_tree
       sha = commits.first['tree']
 
-      Repo.get("http://github.com/api/v2/json/tree/show/#{user}/#{name}/#{sha}")['tree']
+      Repo.get_with_success("http://github.com/api/v2/json/tree/show/#{user}/#{name}/#{sha}")['tree']
+    end
+
+    def self.get_with_success(*args)
+      http_response = get(*args)
+  
+      if http_response.response.is_a?(Net::HTTPForbidden)
+        raise RateLimitExceeded
+      elsif !http_response.response.is_a?(Net::HTTPOK)
+        raise RuntimeError, "Expected the response to be success but was: #{http_response.response.class}"
+      end
+
+      http_response
     end
   end
 end

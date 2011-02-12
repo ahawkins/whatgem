@@ -94,21 +94,34 @@ describe RubyGem do
     end
   end
 
-  describe '#from_repo' do
+  describe "#from_gemcutter" do
     before(:each) do
-      @repo = mock(Github::Repo, :owner => 'Adman65').as_null_object
+      @gemcutter = mock(Gemcutter::Gem).as_null_object
+      subject.stub(:from_repo)
     end
 
-    it "should set the name from the repo" do
-      @repo.stub :name => 'cashier'
-      subject.from_repo(@repo)
+    it "should set the gem name from gemcutter" do
+      @gemcutter.stub(:name => 'cashier')
+      subject.from_gemcutter(@gemcutter)
       subject.name.should eql('cashier')
     end
 
-    it "should set the description from the repo" do
-      @repo.stub :description => 'tag based caching'
-      subject.from_repo(@repo)
-      subject.description.should eql('tag based caching')
+    it "should set the description from gemcutter" do
+      @gemcutter.stub(:info => 'Tag based caching')
+      subject.from_gemcutter(@gemcutter)
+      subject.description.should eql('Tag based caching')
+    end
+
+    it "should update the stats from the associated github repo" do
+      @gemcutter.stub(:github_repo => mock(Github::Repo))
+      subject.should_receive(:from_repo).with(@gemcutter.github_repo)
+      subject.from_gemcutter(@gemcutter)
+    end
+  end
+
+  describe '#from_repo' do
+    before(:each) do
+      @repo = mock(Github::Repo, :owner => 'Adman65').as_null_object
     end
 
     it "should set the github url from the repo" do
@@ -170,22 +183,6 @@ describe RubyGem do
       subject.from_repo(@repo)
       subject.should have_features
     end
-  end
-
-  describe '#related_gems' do
-    it "should find gems with similar names" do
-      RubyGem.should_receive(:where).
-        with('LOWER(name) LIKE ? AND id != ?', '%cashier%', ruby_gems(:cashier).id).
-        and_return([])
-
-      ruby_gems(:cashier).related_gems.should eql([])
-    end
-  end
-
-  it "should calculate the rating before the record is saved" do
-    subject.stub!(:valid? => true)
-    subject.should_receive(:calculate_rating)
-    subject.save
   end
 
   describe "#up_vote_percentage" do
@@ -273,5 +270,10 @@ describe RubyGem do
       cashier.calculate_rating
       cashier.rating.should eql(100.0)
     end
+  end
+
+  it "should use the name for the parameter" do
+    subject.name = 'cashier'
+    subject.to_param.should eql('cashier')
   end
 end

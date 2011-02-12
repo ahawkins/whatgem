@@ -1,1 +1,1 @@
-Flash.notice('Thanks for your vote!')
+$("#rating").replaceWith('<%= escape_javascript(render :partial => 'ruby_gems/rating', :locals => {:ruby_gem => @ruby_gem}) %>');

@@ -1,4 +1,13 @@
 class RubyGem < ActiveRecord::Base
+  has_and_belongs_to_many :related_gems, :class_name => 'RubyGem',
+    :foreign_key => :parent_id, :association_foreign_key => :child_id,
+    :join_table => :related_gems, :uniq => true,
+    :finder_sql => 'SELECT * FROM ruby_gems INNER JOIN related_gems ON 
+      (ruby_gems.id = related_gems.parent_id AND related_gems.child_id = #{id}) OR
+      (ruby_gems.id = related_gems.child_id AND related_gems.parent_id = #{id})',
+    :delete_sql => 'DELETE * FROM related_gems WHERE 
+      parent_id = #{id} OR child_id = #{id}'
+
   has_many :comments, :dependent => :destroy
   has_many :votes, :dependent => :destroy
   belongs_to :user
@@ -12,6 +21,10 @@ class RubyGem < ActiveRecord::Base
   acts_as_taggable_on :tags
 
   default_scope order('rating desc')
+
+  def self.per_page
+    35
+  end
 
   def self.named(name)
     where('LOWER(name) = ?', name.downcase).first
@@ -55,13 +68,7 @@ class RubyGem < ActiveRecord::Base
     documentation_url.present?
   end
 
-  def related_gems
-    RubyGem.where('LOWER(name) LIKE ? AND id != ?', "%#{name.downcase}%", id)
-  end
-
   def from_repo(repo)
-    self.name = repo.name
-    self.description = repo.description
     self.github_url = repo.url
     self.user = User.find_or_create_by_name(repo.owner)
 
@@ -80,8 +87,10 @@ class RubyGem < ActiveRecord::Base
   end
 
   def from_gemcutter(gemcutter)
-    self.from_repo(gemcutter.github_repo) if gemcutter.github_repo
+    self.from_repo(gemcutter.github_repo)
     self.documentation_url = gemcutter.documentation_url
+    self.name = gemcutter.name
+    self.description = gemcutter.info
     self
   end
 
@@ -91,6 +100,10 @@ class RubyGem < ActiveRecord::Base
     else
       (votes.up.count.to_f / votes.count.to_f)
     end
+  end
+
+  def rescore!
+    save!
   end
 
   def calculate_rating
@@ -120,7 +133,13 @@ class RubyGem < ActiveRecord::Base
     # Ensure gems with a boat load of extra
     # content don't overflow the rankings
     base = 100.0 if base > 100.0
-    
+
     self.rating = base
+    
+    true
+  end
+
+  def to_param
+    name
   end
 end

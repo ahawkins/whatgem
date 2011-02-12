@@ -1,9 +1,0 @@
-<% if @ruby_gem.valid? %>
-  Flash.notice('<%= @ruby_gem.name %> added!');
-  $('#import-gems form.submitted').slideUp('fast');
-<% else %>
-  Flash.error('Did you fill in all the fields?')
-  $('#import-gems form.submitted').replaceWith('<%= escape_javascript(render :partial => 'form', :locals => {:ruby_gem => @ruby_gem }) %>');
-<% end %>
-
-$('#import-gems form.submitted').removeClass('submitted')

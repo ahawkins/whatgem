@@ -62,6 +62,8 @@ a {
 
 table#gems {
   width: 100%; }
+  table#gems th {
+    text-align: left; }
 
 #rating #votes, #rating p {
   display: inline-block; }

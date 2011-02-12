@@ -1,14 +1,15 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :find_gem!
 
   def create
-    @ruby_gem = RubyGem.find params[:ruby_gem_id]
     @comment = @ruby_gem.comments.build params[:comment]
     @comment.user = current_user
 
     @comment.save
 
     if @comment.save
+      @ruby_gem.rescore!
       respond_to do |wants|
         flash[:notice] = "Thanks for the comment. This will bump #{@ruby_gem}'s rating a bit!"
         wants.html { redirect_to ruby_gem_path(@ruby_gem) }

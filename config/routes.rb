@@ -3,22 +3,19 @@ Whatgem::Application.routes.draw do
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
-  resources :ruby_gems, :only => :show do
-    resources :comments, :only => :create
-
-    resources :votes, :only => [] do
-      collection do
-        post 'up'
-        post 'down'
-      end
-    end
+  resources :users, :only => [] do
+    resources :ruby_gems, :only => :index
   end
 
-  namespace :user do
-    root :to => 'dashboards#show'
-    resources :ruby_gems do
-      collection do 
-        get 'import'
+  constraints :id => /[A-Za-z0-9\-\_\.]+/ do
+    resources :ruby_gems, :path => 'gems', :except => [:new, :edit, :destroy] do
+      resources :comments, :only => :create
+
+      resources :votes, :only => [] do
+        collection do
+          post 'up'
+          post 'down'
+        end
       end
     end
   end

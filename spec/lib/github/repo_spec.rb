@@ -3,7 +3,18 @@ require 'spec_helper'
 describe Github::Repo do
   fixtures(:users)
 
+  describe 'Repo#find_by_user_and_name' do
+    it "should delegate to find" do
+      Github::Repo.should_receive(:find).with('Adman65', 'cashier')
+      Github::Repo.find_by_user_and_name('Adman65', 'cashier')
+    end
+  end
+
   describe 'Repo#find' do
+    let(:api_url) {
+      'http://github.com/api/v2/json/repos/show/Adman65/cashier'
+    }
+
     it "should use the github api to get the info" do
       api_response = {"repository" => 
         { "has_issues" => true, 
@@ -23,23 +34,18 @@ describe Github::Repo do
           "open_issues" => 0 
         }
       }
-
-      api_url = 'http://github.com/api/v2/json/repos/show/Adman65/cashier'
-
       stub_request(:get, api_url).to_return(:body => api_response.to_json)
       mock_repo = mock(Github::Repo)
-
-      Github::Repo.should_receive(:new).with(api_response['repository']).
-        and_return(mock_repo)
+      Github::Repo.should_receive(:new).with(api_response['repository']).and_return(mock_repo)
 
       Github::Repo.find('Adman65', 'cashier').should eql(mock_repo)
     end
 
-    it "should return nil if the api returns anything other than success" do
-      stub_request(:get, 'http://github.com/api/v2/json/repos/show/Adman65/cashier').
-        to_return(:status => 4040)
+    it "should raise an error if the repo does not exists" do
+      stub_request(:get, api_url).
+        to_return(:status => 404)
 
-      Github::Repo.find('Adman65', 'cashier').should be_nil
+      lambda { Github::Repo.find('Adman65', 'cashier') }.should raise_error
     end
   end
 
@@ -71,191 +77,89 @@ describe Github::Repo do
     end
   end
 
-  describe "#repos" do
-    subject { users(:Adman65) }
-
-    it "should create an array of repos using the github api" do
-      api_url = "http://github.com/api/v2/json/repos/show/Adman65"
-      User.stub!(:get).with(api_url).and_return({'repositories' => [{:repo => :data}]})
-
-      mock_repo = mock(Github::Repo)
-      Github::Repo.should_receive(:new).with(:repo => :data).and_return(mock_repo)
-
-      subject.repos.should eql([mock_repo])
-    end
-  end
-     
   describe '#number_of_closed_issues' do
-    before(:each) do
-      api_response = %Q{{
-        "issues": [
-          {
-            "gravatar_id": "b8dbb1987e8e5318584865f880036796",
-            "position": 1.0,
-            "number": 8,
-            "votes": 3,
-            "created_at": "2010/01/22 17:56:29 -0800",
-            "comments": 10,
-            "body": "Maybe this? \r\n\r\n<http://www.htmldoc.org>",
-            "title": "PDF",
-            "updated_at": "2010/12/10 21:48:53 -0800",
-            "closed_at": null,
-            "user": "defunkt",
-            "labels": [
-              "feature"
-            ],
-            "state": "open"
-          }
-        ]
-      }}
+    subject { Github::Repo.new :name => 'showoff', :owner => 'schacon' }
 
-      stub_request(:get, 'http://github.com/api/v2/json/issues/list/schacon/showoff/closed').to_return(:body => api_response)
-    end
+    let(:api_url) { 'http://github.com/api/v2/json/issues/list/schacon/showoff/closed' }
 
     it "should use the issues array to determine the size" do
-      repo = Github::Repo.new :name => 'showoff', :owner => 'schacon'
-      repo.number_of_closed_issues.should eql(1)
+      api_response = %Q{{"issues": [{}]}}
+      stub_request(:get, api_url).to_return(:body => api_response)
+
+      subject.number_of_closed_issues.should eql(1)
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.number_of_closed_issues}.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#number_of_open_issues' do
-    before(:each) do
-      api_response = %Q{{
-        "issues": [
-          {
-            "gravatar_id": "b8dbb1987e8e5318584865f880036796",
-            "position": 1.0,
-            "number": 8,
-            "votes": 3,
-            "created_at": "2010/01/22 17:56:29 -0800",
-            "comments": 10,
-            "body": "Maybe this? \r\n\r\n<http://www.htmldoc.org>",
-            "title": "PDF",
-            "updated_at": "2010/12/10 21:48:53 -0800",
-            "closed_at": null,
-            "user": "defunkt",
-            "labels": [
-              "feature"
-            ],
-            "state": "open"
-          }
-        ]
-      }}
+    subject { Github::Repo.new :name => 'showoff', :owner => 'schacon' }
 
-      stub_request(:get, 'http://github.com/api/v2/json/issues/list/schacon/showoff/open').to_return(:body => api_response)
-    end
+    let(:api_url) { 'http://github.com/api/v2/json/issues/list/schacon/showoff/open' }
 
     it "should use the issues array to determine the size" do
-      repo = Github::Repo.new :name => 'showoff', :owner => 'schacon'
-      repo.number_of_open_issues.should eql(1)
+      api_response = %Q{{"issues": [{}]}}
+      stub_request(:get, api_url).to_return(:body => api_response)
+
+      subject.number_of_open_issues.should eql(1)
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.number_of_open_issues}.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#number_of_open_pull_requests' do
-    before(:each) do
-      api_response = %Q{
-        {
-          "pulls": [
-            {
-              "state": "open",
-              "base": {
-                "label": "technoweenie:master",
-                "ref": "master",
-                "sha": "53397635da83a2f4b5e862b5e59cc66f6c39f9c6"
-              },
-              "head": {
-                "label": "smparkes:synchrony",
-                "ref": "synchrony",
-                "sha": "83306eef49667549efebb880096cb539bd436560"
-              },
-              "title": "Synchrony",
-              "position": 4.0,
-              "number": 15,
-              "votes": 0,
-              "comments": 4,
-              "diff_url": "https://github.com/technoweenie/faraday/pull/15.diff",
-              "patch_url": "https://github.com/technoweenie/faraday/pull/15.patch",
-              "labels": [],
-              "html_url": "https://github.com/technoweenie/faraday/pull/15",
-              "issue_created_at": "2010-10-04T12:39:18-07:00",
-              "issue_updated_at": "2010-11-04T16:35:04-07:00",
-              "created_at": "2010-10-04T12:39:18-07:00",
-              "updated_at": "2010-11-04T16:30:14-07:00"
-            }
-          ]
-        }
-      }
+    subject { Github::Repo.new :name => 'faraday', :owner => 'technoweenie' }
 
-      stub_request(:get, 'http://github.com/api/v2/json/pulls/technoweenie/faraday/open').to_return(:body => api_response)
-    end
+    let(:api_url) { 'http://github.com/api/v2/json/pulls/technoweenie/faraday/open' }
 
     it "should use the pulls attribute to determine the size" do
-      repo = Github::Repo.new :name => 'faraday', :owner => 'technoweenie'
-      repo.number_of_open_pull_requests.should eql(1)
+      api_response = %Q{{"pulls": [{}]}}
+      stub_request(:get, api_url).to_return(:body => api_response)
+      subject.number_of_open_pull_requests.should eql(1)
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.number_of_open_pull_requests}.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#number_of_closed_pull_requests' do
-    before(:each) do
-      api_response = %Q{
-        {
-          "pulls": [
-            {
-              "state": "closed",
-              "base": {
-                "label": "technoweenie:master",
-                "ref": "master",
-                "sha": "53397635da83a2f4b5e862b5e59cc66f6c39f9c6"
-              },
-              "head": {
-                "label": "smparkes:synchrony",
-                "ref": "synchrony",
-                "sha": "83306eef49667549efebb880096cb539bd436560"
-              },
-              "title": "Synchrony",
-              "position": 4.0,
-              "number": 15,
-              "votes": 0,
-              "comments": 4,
-              "diff_url": "https://github.com/technoweenie/faraday/pull/15.diff",
-              "patch_url": "https://github.com/technoweenie/faraday/pull/15.patch",
-              "labels": [],
-              "html_url": "https://github.com/technoweenie/faraday/pull/15",
-              "issue_created_at": "2010-10-04T12:39:18-07:00",
-              "issue_updated_at": "2010-11-04T16:35:04-07:00",
-              "created_at": "2010-10-04T12:39:18-07:00",
-              "updated_at": "2010-11-04T16:30:14-07:00"
-            }
-          ]
-        }
-      }
+    subject { Github::Repo.new :name => 'faraday', :owner => 'technoweenie' }
 
-      stub_request(:get, 'http://github.com/api/v2/json/pulls/technoweenie/faraday/closed').to_return(:body => api_response)
-    end
+    let(:api_url) { 'http://github.com/api/v2/json/pulls/technoweenie/faraday/closed' }
 
     it "should use the pulls attribute to determine the size" do
-      repo = Github::Repo.new :name => 'faraday', :owner => 'technoweenie'
-      repo.number_of_closed_pull_requests.should eql(1)
+      api_response = %Q{{"pulls": [{}]}}
+      stub_request(:get, api_url).to_return(:body => api_response)
+      subject.number_of_closed_pull_requests.should eql(1)
     end
-  end
 
-  describe 'Repo#find_by_user_and_name' do
-    it "should delegate to find" do
-      Github::Repo.should_receive(:find).with('Adman65', 'cashier')
-      Github::Repo.find_by_user_and_name('Adman65', 'cashier')
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.number_of_closed_pull_requests}.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#has_readme?' do
     before(:each) do
-      commits = %Q{
-        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
-      }
-
+      commits = %Q{commits: [{ tree: 'a6a09ebb4ca4b1461a'}]}
       stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
     end
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
 
     it "should use the most recent commit to check the files" do
       tree = %Q{
@@ -267,7 +171,7 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_readme
     end
@@ -283,22 +187,27 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_readme
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+
+      lambda { subject.has_readme? }.should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#has_license?' do
     before(:each) do
-      commits = %Q{
-        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
-      }
-
+      commits = %Q{commits: [{ tree: 'a6a09ebb4ca4b1461a'}]}
       stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
     end
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
 
     it "should use the most recent commit to check the files" do
       tree = %Q{
@@ -310,7 +219,7 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_license
     end
@@ -326,22 +235,27 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_license
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.has_license? }.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
   describe '#has_tests?' do
     before(:each) do
-      commits = %Q{
-        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
-      }
-
+      commits = %Q{commits: [{ tree: 'a6a09ebb4ca4b1461a'}]}
       stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
     end
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
+
+    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
 
     it "should have tests if there is a specs folder" do
       tree = %Q{
@@ -353,7 +267,7 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_tests
     end
@@ -369,9 +283,15 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_tests
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.has_tests? }.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
@@ -386,6 +306,8 @@ describe Github::Repo do
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
 
+    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
+
     it "should have examples if there is an examples folder" do
       tree = %Q{
         {
@@ -396,9 +318,15 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_examples
+    end
+
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.has_examples? }.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 
@@ -413,6 +341,8 @@ describe Github::Repo do
 
     subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
 
+    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
+
     it "should be true if there is a features directory" do
       tree = %Q{
         {
@@ -423,35 +353,15 @@ describe Github::Repo do
         }
       }
 
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
+      stub_request(:get, api_url).to_return(:body => tree)
 
       subject.should have_features
     end
-  end
-  
-  describe '#has_gemspect?' do
-    before(:each) do
-      commits = %Q{
-        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
-      }
 
-      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
-    end
-
-    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
-
-    it "should be true if there is a features directory" do
-      tree = %Q{
-        {
-          tree: [
-            { name: 'Gemspec' }
-          ]
-        }
-      }
-
-      stub_request(:get, 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a').to_return(:body => tree)
-
-      subject.should have_gemspec
+    it "should raise an error if the rate limit is exceeded" do
+      stub_request(:get, api_url).to_return(:status => 403)
+      lambda { subject.has_features? }.
+        should raise_error(Github::RateLimitExceeded)
     end
   end
 end

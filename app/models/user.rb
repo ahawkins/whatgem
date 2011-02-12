@@ -39,11 +39,4 @@ class User < ActiveRecord::Base
   def to_s
     name
   end
-
-  def build_gems_from_github_and_rubygems
-    possible_gems = repos.select(&:has_gemspec?)
-    possible_gems = possible_gems.reject { |r| RubyGem.named(r.name).present? }
-    possible_gems = possible_gems.select { |r| Gemcutter::Gem.find(r.name).present? }
-    possible_gems.map {|repo| RubyGem.from_repo(repo)}  
-  end
 end
