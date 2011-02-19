@@ -19,6 +19,7 @@ gem 'jquery-rails'
 gem 'acts-as-taggable-on'
 gem 'mechanize'
 gem 'will_paginate'
+gem 'maruku'
 
 group :production do
   gem "dalli"
