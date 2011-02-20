@@ -8,6 +8,7 @@ Feature: Tag gems
   Scenario: The user is logged in
     Given I login as "Adman65"
     When I go to the "sunspot" gem
+    And I follow "Edit"
     And I check "Caching"
     And I wait
     Then "sunspot" should be tagged with "caching"

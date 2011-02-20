@@ -268,7 +268,7 @@ describe RubyGem do
       cashier = ruby_gems(:cashier)
       cashier.stub_chain(:comments, :count).and_return(10000000)
       cashier.calculate_rating
-      cashier.rating.should eql(100.0)
+      cashier.rating.should eql(1.0)
     end
   end
 
