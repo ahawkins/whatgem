@@ -8,20 +8,22 @@
     = stylesheet_link_tag 'http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css'
     = stylesheet_link_tag "application"
     = javascript_include_tag :defaults
-    = formtastic_stylesheet_link_tag
     = csrf_meta_tag
     = yield(:head)
 
   %body
     #container
       %header
-        %h1= link_to 'WhatGem', '#'
+        %h1= link_to 'WhatGem', root_path
         %nav
-          = link_to 'Home'
-          = link_to 'Gems'
-          = link_to 'Authors'
-          = link_to 'Sign in with Github'
-          = link_to 'logout'
+          = link_to 'Top', root_path
+          = link_to 'Gems', ruby_gems_path
+          - if !user_signed_in?
+            = link_to user_omniauth_authorize_path(:github), :id => 'sign-in' do
+              = image_tag 'github.ico'
+              Sign in with Github
+          - else
+            = link_to 'Logout', destroy_user_session_path
 
       - flash.each do |name, msg|
         = content_tag :div, msg, :id => "flash_#{name}"
@@ -30,10 +32,6 @@
         = yield
 
       %footer
-        - link_to 'http://www.w3.org/html/logo/' do
-          = image_tag "http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png", |
-            :width => "165",  :height => "64", 
-            :alt => "HTML5 Powered with CSS3 / Styling, and Semantics", 
-            :title => "HTML5 Powered with CSS3 / Styling, and Semantics"
+        = html5_logo
         %nav
           = link_to 'Source', 'https://github.com/Adman65/whatgem'

@@ -1,43 +1,58 @@
 - title @ruby_gem
 
-- if !user_signed_in?
-  = link_to "Sign in with Github", user_omniauth_authorize_path(:github)
+%section#title
+  = render :partial => 'rating', :locals => {:ruby_gem => @ruby_gem}
 
+%section#description
+  %h2 Description
+  = @ruby_gem.description
 
-= render :partial => 'rating', :locals => {:ruby_gem => @ruby_gem}
-
-#description
-  = simple_format @ruby_gem.description
-
-#metrics
+%section#metrics
   %h2 Metrics
   %table
     %tbody
       %tr
-        %td Has Readme?
-        %td= @ruby_gem.has_readme?
+        %th Has Readme?
+        %td= icon_for_flag @ruby_gem.has_readme?
+        %td
+          Indicates there is a "readme" file in the root directory of the repo.
+          The extension and case do not matter.
       %tr
-        %td Has License?
-        %td= @ruby_gem.has_license?
+        %th Has License?
+        %td= icon_for_flag  @ruby_gem.has_license?
+        %td
+          Indicates there is a "license" file in the root directory of the repo.
+          The extension and case do not matter.
       %tr
-        %td Has Unit Tests?
-        %td= @ruby_gem.has_tests?
+        %th Has Unit Tests?
+        %td= icon_for_flag  @ruby_gem.has_tests?
+        %td
+          Indicates there is a "tests" or "specs" directory in the root directory of the repo.
       %tr
-        %td Has Features?
-        %td= @ruby_gem.has_features?
+        %th Has Features?
+        %td= icon_for_flag  @ruby_gem.has_features?
+        %td
+          Indicates there is a "features" directory in the root directory of the repo.
       %tr
-        %td Has Examples?
-        %td= @ruby_gem.has_examples?
+        %th Has Examples?
+        %td= icon_for_flag  @ruby_gem.has_examples?
+        %td
+          Indicates there is a "examples" directory in the root directory of the repo.
       %tr
-        %td Has Documentation?
-        %td= @ruby_gem.has_documentation?
+        %th Has Documentation?
+        %td= icon_for_flag  @ruby_gem.has_documentation?
+        %td
+          Indicates that the documentation url is present in the gemspec
       %tr
-        %td Closed Issues
+        %th Closed Issues
         %td= number_to_percentage @ruby_gem.closed_issue_percentage * 100, :precision => 2
+        %td Ratio of closed to open issues on github
       %tr
-        %td Merged Pull Requests
+        %th Merged Pull Requests
         %td= number_to_percentage @ruby_gem.merged_pull_request_percentage * 100, :precision => 2
-#links
+        %td Ratio of merged to unmerged pull requests on github
+
+%section#links
   %h2 Related Links
   = link_to_github @ruby_gem
   = link_to_test_results @ruby_gem
@@ -46,20 +61,22 @@
     = link_to 'Documentation', @ruby_gem.documentation_url
 
 - if @ruby_gem.related_gems.present?
-  #related
+  %section#related
     %h2 Related Gems
     %p= @ruby_gem.related_gems.map {|r| link_to r, ruby_gem_path(r)}.to_sentence.html_safe
 
-#tags
-  %h2 Tags
+%section#tags
+  %h2
+    Tags
+    - if user_signed_in?
+      %span= link_to 'Edit', '#', :id => 'toggle-tag-form'
   - if user_signed_in?
-    = semantic_form_for @ruby_gem, :remote => true do |f|
+    = semantic_form_for @ruby_gem, :remote => true, :html => { :id => 'tag-form' } do |f|
       = f.inputs do
         = f.input :tag_list, :as => :check_boxes, :collection => available_tags, :wrapper_html => {:id => 'gem-tags'}
-  - else
-    %p= @ruby_gem.tags.to_sentence
+  = render :partial => 'tags', :locals => {:ruby_gem => @ruby_gem}
 
-#comments
+%section#comments
   %h2 Comments
 
   - @ruby_gem.comments.each do |comment|

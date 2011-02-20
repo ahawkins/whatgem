@@ -1,6 +1,6 @@
 - title 'What Gem'
 
-#banner
+%section#banner
   :markdown
     # How it Works
     WhatGem is a gem ranking website. It rates gems on various metrics.
@@ -9,20 +9,18 @@
     for other gems, the higher ranking it has. The autor also impacts the rating
     as well. Sign in with your github acount to comment and vote on gems!
 
-%h2.ribbon.full Top Gems
-.triangle-ribbon
+%section#top-gems
+  = full_ribbon 'Top Gems'
 
-%table#gems
-  %th
-    %tr
-      %th Gem
-      %th Description
-      %th Rating
-  %tbody
-    - @ruby_gems.each do |ruby_gem|
+  %table#gems
+    %th
       %tr
-        %td.name= link_to ruby_gem, ruby_gem_path(ruby_gem)
-        %td.description= truncate ruby_gem.description, :length => 75
-        %td.rating= number_to_percentage ruby_gem.rating * 100, :precision => 1
-
-= will_paginate @ruby_gems
+        %th Gem
+        %th Description
+        %th Rating
+    %tbody
+      - @ruby_gems.each do |ruby_gem|
+        %tr
+          %td.name= link_to ruby_gem, ruby_gem_path(ruby_gem)
+          %td.description= truncate ruby_gem.description, :length => 75
+          %td.rating= number_to_percentage ruby_gem.rating * 100, :precision => 1

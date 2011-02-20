@@ -27,7 +27,8 @@ header {
     float: left;
     text-indent: -4000px; }
     header h1 a {
-      display: block; }
+      display: block;
+      height: 38px; }
   header nav {
     float: right;
     padding: 10px; }
@@ -59,6 +60,10 @@ header {
         padding: 7px 11px 8px;
         text-shadow: 0 1px 0 white; }
 
+#sign-in img {
+  position: relative;
+  top: 3px; }
+
 #page {
   background: white;
   color: #191919;
@@ -73,12 +78,18 @@ header {
   border-top-right-radius: 3px 3px;
   border-bottom-right-radius: 3px 3px;
   border-bottom-left-radius: 3px 3px; }
+  #page > section:first-child {
+    padding-bottom: 0; }
+
+section {
+  padding-bottom: 20px; }
 
 footer {
   margin: 20px 0; }
   footer nav {
     position: relative;
-    top: 20px;
+    font-size: 12px;
+    top: 24px;
     float: right; }
     footer nav a {
       color: #191919 !important;
@@ -90,7 +101,22 @@ a, a:active, a:visited {
 a:hover {
   color: #c31d25; }
 
+h2 {
+  font-family: Aller-bold;
+  font-size: 24px;
+  border-bottom: 1px solid #d9d9d9;
+  padding-bottom: 5px;
+  margin-bottom: 10px; }
+  h2 span {
+    float: right;
+    font-size: 14px;
+    font-family: Helvetica, Arial, Verdana;
+    font-weight: normal; }
+    h2 span a {
+      text-decoration: none !important; }
+
 h2.ribbon {
+  font-family: Helvetica, Arial, Verdana;
   font-size: 26px;
   letter-spacing: 1px;
   padding: 15px 30px;
@@ -105,6 +131,8 @@ h2.ribbon {
   border-top-right-radius: 3px 3px;
   border-bottom-right-radius: 3px 3px;
   border-bottom-left-radius: 0px 0px; }
+  h2.ribbon div {
+    float: right; }
 
 .ribbon {
   background: url(../images/grad-red.gif) repeat-x center top #8f1e14;
@@ -126,6 +154,11 @@ h2.ribbon {
 
 .triangle-ribbon {
   border-color: transparent #5c130d transparent transparent; }
+
+.ribbon-clear {
+  height: 1px;
+  display: hidden;
+  clear: both; }
 
 h2.full {
   width: 890px; }
@@ -194,17 +227,28 @@ button.small, .button.small {
 #flash_notice,
 #flash_error,
 #flash_alert {
-  padding: 5px 8px;
-  margin: 10px 0; }
+  width: 933px;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid white;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 100%;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-bottom-left-radius: 3px 3px; }
 
 #flash_notice {
-  background-color: #ccffcc;
-  border: solid 1px #66cc66; }
+  background: #f1ffbf url("../images/success.png") no-repeat 10px 10px;
+  border-color: #a6d50f; }
 
 #flash_error,
 #flash_alert {
-  background-color: #ffcccc;
-  border: solid 1px #cc6666; }
+  background: #fecdc6 url("../images/error.png") no-repeat 10px 10px;
+  border-color: #f45d43; }
 
 #banner {
   margin: 10px 0;
@@ -227,20 +271,41 @@ table#gems {
   table#gems th {
     text-align: left; }
 
-#rating #votes, #rating p {
+#votes span, #votes form {
   display: inline-block; }
+#votes .button {
+  font-size: 13px;
+  margin: 0; }
+
+#description {
+  font-size: 16px; }
+
+#metrics {
+  margin-bottom: 20px; }
+  #metrics table th {
+    font-size: 16px;
+    padding-left: 0;
+    width: 30%; }
+  #metrics table tr td:last-child {
+    color: #666666; }
+
+#tags form {
+  display: none; }
+
+#tag-list {
+  margin-top: 10px; }
+  #tag-list li {
+    display: inline;
+    margin-right: 15px; }
 
 #gem-tags > fieldset > legend {
   display: none; }
-#gem-tags > fieldset > ol {
-  padding: 0;
-  float: none;
-  width: 100%; }
-  #gem-tags > fieldset > ol > li {
-    display: inline-block; }
-    #gem-tags > fieldset > ol > li label {
-      margin-right: 10px;
-      width: 125px; }
+#gem-tags > fieldset > ol > li {
+  display: inline-block;
+  margin: 5px 0;
+  width: 125px; }
+  #gem-tags > fieldset > ol > li label {
+    width: 125px; }
 
 #comments .comment {
   overflow: auto;
@@ -252,12 +317,13 @@ table#gems {
     margin-right: 10px;
     margin-bottom: 10px; }
   #comments .comment p.meta {
-    margin-top: 0; }
-#comments #new_comment #comment_text_input label {
-  float: none;
-  margin-bottom: 5px; }
-#comments #new_comment #comment_text {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #666666; }
+
+#new_comment #comment_text_input label, #new_comment #comment_text_input textarea {
+  display: block;
+  margin-bottom: 10px; }
+#new_comment #comment_text_input textarea {
   width: 60%;
-  height: 60px; }
-#comments #new_comment fieldset.buttons {
-  padding-left: 10px; }
+  height: 100px; }

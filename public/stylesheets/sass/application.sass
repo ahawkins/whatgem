@@ -31,6 +31,7 @@ header
     text-indent: -4000px
     a
       display: block
+      height: 38px
 
   nav
     float: right
@@ -63,6 +64,10 @@ header
         border-bottom: 1px solid #E0E0E0
         padding: 7px 11px 8px
         text-shadow: 0 1px 0 white
+#sign-in
+  img
+    position: relative
+    top: 3px
 
 #page
   background: white
@@ -79,13 +84,20 @@ header
   border-bottom-right-radius: 3px 3px
   border-bottom-left-radius: 3px 3px
 
+  & > section:first-child
+    padding-bottom: 0
+
+
+section
+  padding-bottom: 20px
 
 footer
   margin: 20px 0
 
   nav
     position: relative
-    top: 20px
+    font-size: 12px
+    top: 24px
     float: right
 
     a
@@ -98,7 +110,22 @@ a, a:active, a:visited
 a:hover 
   color: #c31d25
 
+h2
+  font-family: Aller-bold
+  font-size: 24px
+  border-bottom: 1px solid #D9D9D9
+  padding-bottom: 5px
+  margin-bottom: 10px
+  span
+    float: right
+    font-size: 14px
+    font-family: Helvetica, Arial, Verdana
+    font-weight: normal
+    a
+      text-decoration: none !important
+
 h2.ribbon
+  font-family: Helvetica, Arial, Verdana
   font-size: 26px
   letter-spacing: 1px
   padding: 15px 30px
@@ -113,6 +140,9 @@ h2.ribbon
   border-top-right-radius: 3px 3px
   border-bottom-right-radius: 3px 3px
   border-bottom-left-radius: 0px 0px
+
+  div
+    float: right
   
 .ribbon 
   background: url(../images/grad-red.gif) repeat-x center top #8f1e14
@@ -135,6 +165,11 @@ h2.ribbon
 
 .triangle-ribbon 
   border-color: transparent #5c130d transparent transparent
+
+.ribbon-clear
+  height: 1px
+  display: hidden
+  clear: both
 
 h2.full 
   width: 890px
@@ -200,22 +235,35 @@ button.small, .button.small
     background: url("../images/grad-grey-hover.gif") repeat-x scroll center top #C3C3C3
   .current
     background: url("../images/grad-grey-rev.gif") repeat-x scroll center top #C3C3C3
-    
 
 #flash_notice,
 #flash_error,
 #flash_alert
-  padding: 5px 8px
-  margin: 10px 0
+  width: 933px
+  padding: 10px 10px 10px 35px
+  border: 1px solid white
+  margin-bottom: 10px
+  position: relative
+  font-size: 100%
+  border-radius: 3px
+  -moz-border-radius: 3px
+  -webkit-border-radius: 3px
+  border-top-left-radius: 3px 3px
+  border-top-right-radius: 3px 3px
+  border-bottom-right-radius: 3px 3px
+  border-bottom-left-radius: 3px 3px
+
 
 #flash_notice
-  background-color: #ccffcc
-  border: solid 1px #66cc66
+  background: #F1FFBF url('../images/success.png') no-repeat 10px 10px
+  border-color: #A6D50F
+
 
 #flash_error,
 #flash_alert
-  background-color: #ffcccc
-  border: solid 1px #cc6666
+  background: #FECDC6 url('../images/error.png') no-repeat 10px 10px
+  border-color: #F45D43
+
 
 #banner
   margin: 10px 0
@@ -241,25 +289,46 @@ table#gems
 
   width: 100%
 
-#rating
-  #votes, p
+#votes
+  span, form
     display: inline-block
+  .button
+    font-size: 13px
+    margin: 0
+
+#description
+  font-size: 16px
+
+#metrics 
+  margin-bottom: 20px
+  table
+    th
+      font-size: 16px
+      padding-left: 0
+      width: 30%
+
+    tr td:last-child
+      color: #666
+
+#tags form
+  display: none
+#tag-list
+  margin-top: 10px
+  li
+    display: inline
+    margin-right: 15px
 
 #gem-tags
   & > fieldset > legend
     display: none
 
-  & > fieldset > ol 
-    padding: 0
-    float: none
-    width: 100%
-    
-    & > li
-      display: inline-block
+  & > fieldset > ol > li
+    display: inline-block
+    margin: 5px 0
+    width: 125px
 
-      label
-        margin-right: 10px
-        width: 125px
+    label
+      width: 125px
 
 #comments
   .comment
@@ -273,14 +342,14 @@ table#gems
       margin-bottom: 10px
     p.meta
       margin-top: 0
+      margin-bottom: 5px
+      color: #666
 
-  #new_comment
-    #comment_text_input
-      label
-        float: none
-        margin-bottom: 5px
-    #comment_text
+#new_comment
+  #comment_text_input
+    label, textarea
+      display: block
+      margin-bottom: 10px
+    textarea
       width: 60%
-      height: 60px
-    fieldset.buttons
-      padding-left: 10px
+      height: 100px

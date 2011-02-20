@@ -132,10 +132,10 @@ class RubyGem < ActiveRecord::Base
 
     # Ensure gems with a boat load of extra
     # content don't overflow the rankings
-    base = 100.0 if base > 100.0
+    base = 1 if base > 1
 
     self.rating = base
-    
+
     true
   end
 

@@ -1,0 +1,3 @@
+%ul#tag-list
+  - ruby_gem.tags.each do |tag|
+    %li= link_to tag.name.titleize, ruby_gems_path(:tag => tag.name)

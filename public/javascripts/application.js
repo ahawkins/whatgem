@@ -22,4 +22,9 @@ $(function(){
 
   // make comment box on gem page elastic
   $('#comment_text').elastic();
+
+  $('#toggle-tag-form').click(function(){
+    $('#tag-form').slideToggle('fast');
+    return false;
+  });
 });
