@@ -34,4 +34,14 @@ namespace :ruby_gems do
       end
     end
   end
+
+  desc "Run tests for all Gems in the db"
+  task :test => :environment do
+    repo_path = "~/repos"
+    RubyGem.all.each do |ruby_gem|
+      repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
+      puts "Processing #{repo_url}"
+      %x(cd #{repo_path} ; git clone #{repo_url})
+    end
+  end
 end
