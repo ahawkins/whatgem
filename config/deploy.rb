@@ -1,8 +1,12 @@
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+
+require "rvm/capistrano" 
 require 'bundler/capistrano'
 
 set :application, "whatgem"
 set :repository,  "git://github.com/Adman65/whatgem.git"
 set :branch, 'production'
+set :deploy_to, '/apps/whatgem'
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
@@ -15,14 +19,18 @@ role :app, "gems.broadcastingadam.com"                          # This may be th
 role :db,  "gems.broadcastingadam.com", :primary => true # This is where Rails migrations will run
 role :db,  "gems.broadcastingadam.com"
 
-# If you are using Passenger mod_rails uncomment this:
-# if you're still using the script/reapear helper you will need
-# these http://github.com/rails/irs_process_scripts
+namespace :deploy do
 
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
+  task :link_configs, :roles => :app do
+    %w(database resque).each do |config|
+      run "ln -sf ~/configs/#{fetch(:application)}/#{config}.yml #{current_path}/config/#{config}.yml"
+    end
+  end
+  after 'deploy:symlink', 'deploy:link_configs' 
+
+  task :start do ; end
+  task :stop do ; end
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+  end
+end
