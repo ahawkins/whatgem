@@ -21,9 +21,9 @@ set :output, "/apps/whatgem/log/cron.log"
 #
 
 every 2.days do
-  rake ruby_gems:scape
+  rake 'ruby_gems:scape'
 end
 
 every 1.day do
-  rake ruby_gems:test
+  rake 'ruby_gems:test'
 end

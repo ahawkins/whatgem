@@ -2,7 +2,6 @@ $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 
 require "rvm/capistrano" 
 require 'bundler/capistrano'
-require 'whenever/capistrano'
 
 set :application, "whatgem"
 set :repository,  "git://github.com/Adman65/whatgem.git"
@@ -34,6 +33,12 @@ namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
+
+  desc "Update the crontab file"
+  task :update_crontab, :roles => :app, :except => { :no_release => true } do
+    run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
+  end
+  after 'deploy:update_code', 'deploy:update_crontab'
 end
 
 namespace :god do  

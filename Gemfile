@@ -22,7 +22,6 @@ gem 'will_paginate'
 gem 'maruku'
 gem 'capistrano'
 gem 'whenever'
-gem 'i18n'
 
 group :production do
   gem "dalli"

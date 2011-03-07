@@ -274,7 +274,6 @@ DEPENDENCIES
   heroku
   hirb
   httparty
-  i18n
   infinity_test
   jquery-rails
   machinist
