@@ -1,6 +1,6 @@
 rails_env   = ENV['RAILS_ENV']  || "production"
 rails_root  = ENV['RAILS_ROOT'] || "/apps/whatgem/current"
-num_workers = rails_env == 'production' ? 5 : 2
+num_workers = 1
 
 num_workers.times do |num|
   God.watch do |w|
