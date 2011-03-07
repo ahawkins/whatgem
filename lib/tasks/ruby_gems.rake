@@ -38,7 +38,7 @@ namespace :ruby_gems do
   desc "Run tests for all Gems in the db"
   task :test => :environment do
     RubyGem.order('updated_at asc').each do |ruby_gem|
-      Resque.enqueue ruby_gem.name
+      Resque.enqueue TestGemJob, ruby_gem.name
     end
   end
 
