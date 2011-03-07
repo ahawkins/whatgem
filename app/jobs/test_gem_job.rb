@@ -8,8 +8,8 @@ class TestGemJob
 
     bash_script = Rails.root.join('bash','test_repo.sh')
 
-    cmd = "#{bash_script} #{repo_url}"
-    ruby_gem.test_log = %x{echo 'Running: #{cmd}' ; #{cmd}}
+    cmd = "/bin/bash -l -c '#{bash_script} #{repo_url}'"
+    ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
 
     ruby_gem.save!
   end

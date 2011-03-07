@@ -64,6 +64,13 @@ namespace :god do
   end
 end
 
+namespace :ruby_gems do
+  desc "Run tests for all gems in the db" 
+  task :test, :roles => :app do
+    run "cd #{current_path} ; rake ruby_gems:test RAILS_ENV=production"
+  end
+end
+
 before "deploy", "deploy:web:disable"
 before "deploy", "god:stop"
 

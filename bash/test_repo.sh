@@ -4,6 +4,7 @@ repos_path=/tmp/repos
 repo_path=$repos_path/$name
 
 echo Processing $repo
+echo $(whoami)
 
 rm -rf $repo_path
 cd $repos_path
