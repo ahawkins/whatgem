@@ -5,7 +5,7 @@ num_workers = rails_env == 'production' ? 5 : 2
 num_workers.times do |num|
   God.watch do |w|
     w.name     = "resque-#{num}"
-    w.group    = 'resque'
+    w.group    = 'whatgem'
     w.interval = 30.seconds
     w.env      = {"QUEUE"=>"critical,high,low", "RAILS_ENV"=>rails_env}
     w.start    = "rake -f #{rails_root}/Rakefile environment resque:work"

@@ -43,18 +43,18 @@ namespace :god do
 
   desc "Start God watches" 
   task :start, :roles => :app do
-    sudo "#{fetch(:god_path)}  start #{stage}"  
+    sudo "#{fetch(:god_path)}  start #{fetch(:application)}"
   end
 
   desc "Stop God watches"
   task :stop, :roles => :app do
-    sudo "#{fetch(:god_path)} stop #{stage}"  
+    sudo "#{fetch(:god_path)} stop #{fetch(:application)}"
   end
 
   desc "Unload & stop God watches"
   task :unload, :roles => :app do
-    sudo "#{fetch(:god_path)} stop #{stage}"
-    sudo "#{fetch(:god_path)}  remove #{stage}"  
+    sudo "#{fetch(:god_path)} stop #{fetch(:application)}"
+    sudo "#{fetch(:god_path)}  remove #{fetch(:application)}"
   end
 end
 
