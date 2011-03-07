@@ -2,6 +2,7 @@ $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 
 require "rvm/capistrano" 
 require 'bundler/capistrano'
+require 'whenever/capistrano'
 
 set :application, "whatgem"
 set :repository,  "git://github.com/Adman65/whatgem.git"
