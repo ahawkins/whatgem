@@ -1,5 +1,5 @@
 class ImportGemJob
-  @queue = :high
+  @queue = :medium
 
   def self.perform(name)
     gemcutter = Gemcutter::Gem.find name

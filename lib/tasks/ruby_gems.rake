@@ -38,22 +38,7 @@ namespace :ruby_gems do
   desc "Run tests for all Gems in the db"
   task :test => :environment do
     RubyGem.order(:updated_at => 'ASC').each do |ruby_gem|
-      begin
-        repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
-        repo_name = ruby_gem.github_url.split('/').last
-
-        bash_script = Rails.root.join('bash','test_repo.sh')
-        log_path = Rails.root.join('tmp','test_logs',"#{repo_name}.log")
-
-        cmd = "#{bash_script} #{repo_url} > #{log_path}"
-        puts "Running: #{cmd}"
-        %x(#{bash_script} #{repo_url} > #{log_path})
-
-        ruby_gem.test_log = File.read log_path
-        ruby_gem.save!
-      rescue Exception => ex
-        puts "An error occured!: #{ex}"
-      end
+      Resque.enqueue ruby_gem.name
     end
   end
 

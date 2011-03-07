@@ -1,5 +1,5 @@
 class UpdateRatingJob
-  @queue = :high
+  @queue = :low
 
   def self.perform(name)
     ruby_gem = RubyGem.named(name)
