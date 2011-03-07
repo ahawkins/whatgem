@@ -36,7 +36,7 @@ namespace :deploy do
 end
 
 namespace :god do  
-  desc "Deploy theGod file"
+  desc "Deploy the God file"
   task :deploy, :roles => :app  do
     sudo "#{fetch(:god_path)} load #{current_path}/config/whatgem.god"
   end
@@ -59,11 +59,7 @@ namespace :god do
 end
 
 before "deploy", "deploy:web:disable"
-
 before "deploy", "god:stop"
 
 after "deploy", "god:start"
 after "deploy", "deploy:web:enable"
-
-before 'deploy:restart', 'god:stop'
-after 'deploy:restart', 'god:start'
