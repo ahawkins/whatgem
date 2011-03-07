@@ -7,7 +7,7 @@ num_workers.times do |num|
     w.name     = "resque-#{num}"
     w.group    = 'whatgem'
     w.interval = 30.seconds
-    w.env      = {"QUEUE"=>"critical,high,low", "RAILS_ENV"=>rails_env}
+    w.env      = {"QUEUE"=>"high,medium,low", "RAILS_ENV"=>rails_env}
     w.start    = "rake -f #{rails_root}/Rakefile environment resque:work"
 
     w.uid = 'deployer'

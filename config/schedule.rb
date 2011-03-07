@@ -20,7 +20,7 @@ set :output, "/apps/whatgem/log/cron.log"
 # Learn more: http://github.com/javan/whenever
 #
 
-every 2.days do
+every 8.hours do
   rake 'ruby_gems:scape'
 end
 
