@@ -66,7 +66,7 @@ end
 
 namespace :ruby_gems do
   desc "Run tests for all gems in the db" 
-  task :test, :roles => :app do
+  task :tests, :roles => :app do
     run "cd #{current_path} ; rake ruby_gems:test RAILS_ENV=production"
   end
 end

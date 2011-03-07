@@ -4,19 +4,28 @@ repos_path=/tmp/repos
 repo_path=$repos_path/$name
 
 echo Processing $repo
-echo $(whoami)
+echo Cloning into $repo_path
 
 rm -rf $repo_path
 cd $repos_path
 git clone $url
 cd $name
 
-if [ -f .rvmrc]
+echo "Now in: $(pwd)"
+
+rvmrc=$repo_path/.rvmrc
+
+echo "Checking to see if $rmvrc is present"
+
+if [ -f $rmvrc]
 then
   rvm use 1.8.7@$name
 else
   echo "Using provided .rvmrc"
 fi
 
+echo "Running bundle"
 bundle
+
+echo "Running rake"
 rake
