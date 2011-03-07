@@ -4,11 +4,19 @@ repos_path=~/repos
 repo_path=~/repos/$name
 
 echo Processing $repo
+echo $(whoami)
 
 rm -rf $repo_path
 cd $repos_path
 git clone $url
 cd $name
-rvm use 1.8.7@$name
+
+if [ -f .rvmrc]
+then
+  rvm use 1.8.7@$name
+else
+  echo "Using provided .rvmrc"
+fi
+
 bundle
 rake
