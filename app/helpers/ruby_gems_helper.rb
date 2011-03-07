@@ -12,4 +12,19 @@ module RubyGemsHelper
   def link_to_github(ruby_gem, options = {})
     link_to 'Github', ruby_gem.github_url, options
   end
+
+  def guage_for(number)
+    score = number || 0
+    class_name = case score
+    when 0.9..1
+      'green'
+    when 0.8..8.9
+      'yellow'
+    when 0.7..7.9
+      'orange'
+    else
+      'red'
+    end
+    content_tag('span', number_to_percentage(score * 100, :precision => 2), :class => "guage #{class_name}")
+  end
 end

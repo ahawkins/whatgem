@@ -20,6 +20,8 @@ gem 'acts-as-taggable-on'
 gem 'mechanize'
 gem 'will_paginate'
 gem 'maruku'
+gem 'capistrano'
+gem 'whenever'
 
 group :production do
   gem "dalli"

@@ -23,4 +23,4 @@
         %tr
           %td.name= link_to ruby_gem, ruby_gem_path(ruby_gem)
           %td.description= truncate ruby_gem.description, :length => 75
-          %td.rating= number_to_percentage ruby_gem.rating * 100, :precision => 1
+          %td.rating= guage_for(ruby_gem.rating)

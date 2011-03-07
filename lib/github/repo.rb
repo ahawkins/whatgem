@@ -13,7 +13,7 @@ module Github
       :has_wiki, :name, :owner, 
       :description, :open_issues
     ]
-    
+
     ATTRIBUTES.each {|attr| attr_accessor attr }
 
     def self.find(user, repo_name)
@@ -40,7 +40,7 @@ module Github
     def number_of_open_issues
       Repo.get_with_success("http://github.com/api/v2/json/issues/list/#{user}/#{name}/open")['issues'].size
     end
-    
+
     def number_of_open_pull_requests
       Repo.get_with_success("http://github.com/api/v2/json/pulls/#{user}/#{name}/open")['pulls'].size
     end
@@ -57,16 +57,9 @@ module Github
       current_tree.select { |file| file['name'] =~ /license/i }.first.present?
     end
 
-    def has_tests?
-      current_tree.select { |file| file['name'] =~ /(spec|test)/i && file['type'] == 'tree' }.first.present?
-    end
 
     def has_examples?
       current_tree.select { |file| file['name'] =~ /examples/i && file['type'] == 'tree' }.first.present?
-    end
-
-    def has_features?
-      current_tree.select { |file| file['name'] =~ /features/i && file['type'] == 'tree' }.first.present?
     end
 
     def has_gemspec?

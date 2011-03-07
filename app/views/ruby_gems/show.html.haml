@@ -12,6 +12,18 @@
   %table
     %tbody
       %tr
+        %th Passing tests
+        %td#test-results= guage_for(@ruby_gem.test_results)
+        %td 
+      %tr
+        %th Closed Issues
+        %td= guage_for(@ruby_gem.closed_issue_percentage)
+        %td Ratio of closed to open issues on github
+      %tr
+        %th Merged Pull Requests
+        %td= guage_for(@ruby_gem.merged_pull_request_percentage)
+        %td Ratio of merged to unmerged pull requests on github
+      %tr
         %th Has Readme?
         %td= icon_for_flag @ruby_gem.has_readme?
         %td
@@ -24,16 +36,6 @@
           Indicates there is a "license" file in the root directory of the repo.
           The extension and case do not matter.
       %tr
-        %th Has Unit Tests?
-        %td= icon_for_flag  @ruby_gem.has_tests?
-        %td
-          Indicates there is a "tests" or "specs" directory in the root directory of the repo.
-      %tr
-        %th Has Features?
-        %td= icon_for_flag  @ruby_gem.has_features?
-        %td
-          Indicates there is a "features" directory in the root directory of the repo.
-      %tr
         %th Has Examples?
         %td= icon_for_flag  @ruby_gem.has_examples?
         %td
@@ -43,14 +45,12 @@
         %td= icon_for_flag  @ruby_gem.has_documentation?
         %td
           Indicates that the documentation url is present in the gemspec
-      %tr
-        %th Closed Issues
-        %td= number_to_percentage @ruby_gem.closed_issue_percentage * 100, :precision => 2
-        %td Ratio of closed to open issues on github
-      %tr
-        %th Merged Pull Requests
-        %td= number_to_percentage @ruby_gem.merged_pull_request_percentage * 100, :precision => 2
-        %td Ratio of merged to unmerged pull requests on github
+%section#test-results
+  %h2 Test Results
+  - if @ruby_gem.test_log?
+    %pre#test-log= @ruby_gem.test_log
+  - else
+    %pre#test-log Nothing yet
 
 %section#links
   %h2 Related Links

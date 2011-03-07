@@ -55,10 +55,10 @@ describe RubyGem do
   end
 
   describe '#closed_issue_precentage' do
-    it "should be 1 if there are no issues" do
+    it "should be 0 if there are no issues" do
       subject.number_of_closed_issues = 0
       subject.number_of_open_issues = 0
-      subject.closed_issue_percentage.should eql(1.0)
+      subject.closed_issue_percentage.should eql(0.0)
     end
 
     it "should use the total # of issues to calculate the close rate" do
@@ -72,7 +72,7 @@ describe RubyGem do
     it "should be 1 if there are no pulls" do
       subject.number_of_closed_pull_requests = 0
       subject.number_of_open_pull_requests = 0
-      subject.merged_pull_request_percentage.should eql(1.0)
+      subject.merged_pull_request_percentage.should eql(0.0)
     end
 
     it "should use the total # of issues to calculate the close rate" do
@@ -166,28 +166,16 @@ describe RubyGem do
       subject.should have_license
     end
 
-    it "should set the tests flag" do
-      @repo.stub :has_tests? => true
-      subject.from_repo(@repo)
-      subject.should have_tests
-    end
-
     it "should set the examples flag" do
       @repo.stub :has_examples? => true
       subject.from_repo(@repo)
       subject.should have_examples
     end
-
-    it "should set the features flag" do
-      @repo.stub :has_features? => true
-      subject.from_repo(@repo)
-      subject.should have_features
-    end
   end
 
   describe "#up_vote_percentage" do
-    it "should be 100 if there are no votes" do
-      RubyGem.new.up_vote_percentage.should eql(1.0)
+    it "should be 0 if there are no votes" do
+      RubyGem.new.up_vote_percentage.should eql(0.0)
     end
 
     it "should be the ratio of up votes over total votes" do
@@ -200,68 +188,64 @@ describe RubyGem do
   end
 
   describe "#calculate_rating" do
-    # These tests have to factor in the default values of the other
-    # metrics. For example, since a new gem has no issues or pull requests
-    # they get 100% in that category. Since the gem has no votes either,
-    # it will get 100% in that category. Testing changes in metrics
-    # has to reflect these defaults.
     before(:each) do
       subject.rating = 0
-      @defaults = 0.2
     end
 
-    it "should get 30% for having tests" do
-      subject.has_tests = true
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.3 + @defaults)
+    it "should get 40% for passing all tests" do
+
+      mock_log = 'real log goes here'
+
+      subject.test_log = mock_log
+      LogAnalyzer.should_receive(:pass_rate).with(mock_log).and_return(1.0)
+
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.4)
     end
 
     it "should get 20% for having documentation" do
       subject.documentation_url = 'http://rdoc.info/gem/name'
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.2 + @defaults)
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.2)
     end
 
     it "should get 10% for having a readme" do
       subject.has_readme = true
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.1 + @defaults)
-    end
-
-    it "should get 10% for having features" do
-      subject.has_features = true
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.1 + @defaults)
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.1)
     end
 
     it "should get 5% for having examples" do
       subject.has_examples = true
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05 + @defaults)
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05)
     end
 
     it "should get 5% for having a license" do
       subject.has_license = true
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05 + @defaults)
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05)
     end
 
-    it "should lose 5% for having open issues" do
-      subject.number_of_open_issues = 1
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(-0.05 + @defaults)
+    it "should get 5% for having closed issues issues" do
+      subject.number_of_open_issues = 0
+      subject.number_of_closed_issues = 1
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05)
     end
 
-    it "should lose 5% for having unhandled pull requests" do
-      subject.number_of_open_pull_requests = 1
-      lambda { subject.calculate_rating }.should change(subject, :rating).by(-0.05 + @defaults)
+    it "should get 5% for having handled pull requests" do
+      subject.number_of_open_pull_requests = 0
+      subject.number_of_closed_pull_requests = 1
+      lambda { subject.calculate_rating }.should change(subject, :rating).by(0.05)
     end
 
     it "should get 10% from vote percentage" do
       cashier = ruby_gems(:cashier)
       cashier.rating = 0
-      Vote.make(:down, :ruby_gem => cashier)
-      lambda { cashier.calculate_rating }.should change(cashier, :rating).by(-0.1 + @defaults)
+      Vote.make(:up, :ruby_gem => cashier)
+      lambda { cashier.calculate_rating }.should change(cashier, :rating).by(0.1)
     end
 
     it "should get half a precent for each comment" do
       cashier = ruby_gems(:cashier)
       cashier.rating = 0
       Comment.make :ruby_gem => cashier
-      lambda { cashier.calculate_rating }.should change(cashier, :rating).by(0.005 + @defaults)
+      lambda { cashier.calculate_rating }.should change(cashier, :rating).by(0.005)
     end
 
     it "should never be more than 100%" do

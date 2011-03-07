@@ -247,54 +247,6 @@ describe Github::Repo do
     end
   end
 
-  describe '#has_tests?' do
-    before(:each) do
-      commits = %Q{commits: [{ tree: 'a6a09ebb4ca4b1461a'}]}
-      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
-    end
-
-    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
-
-    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
-
-    it "should have tests if there is a specs folder" do
-      tree = %Q{
-        {
-          tree: [
-            { name: 'spec', type: 'tree' },
-            { name: 'Rakefile' }
-          ]
-        }
-      }
-
-      stub_request(:get, api_url).to_return(:body => tree)
-
-      subject.should have_tests
-    end
-
-
-    it "should have tests if there is a test folder" do
-      tree = %Q{
-        {
-          tree: [
-            { name: 'test', type: 'tree' },
-            { name: 'Rakefile' }
-          ]
-        }
-      }
-
-      stub_request(:get, api_url).to_return(:body => tree)
-
-      subject.should have_tests
-    end
-
-    it "should raise an error if the rate limit is exceeded" do
-      stub_request(:get, api_url).to_return(:status => 403)
-      lambda { subject.has_tests? }.
-        should raise_error(Github::RateLimitExceeded)
-    end
-  end
-
   describe '#has_examples?' do
     before(:each) do
       commits = %Q{
@@ -326,41 +278,6 @@ describe Github::Repo do
     it "should raise an error if the rate limit is exceeded" do
       stub_request(:get, api_url).to_return(:status => 403)
       lambda { subject.has_examples? }.
-        should raise_error(Github::RateLimitExceeded)
-    end
-  end
-
-  describe '#has_features?' do
-    before(:each) do
-      commits = %Q{
-        commits: [{ tree: 'a6a09ebb4ca4b1461a'}]
-      }
-
-      stub_request(:get, 'http://github.com/api/v2/json/commits/list/Adman65/cashier/master').to_return(:body => commits)
-    end
-
-    subject { Github::Repo.new :owner => 'Adman65', :name => 'cashier' }
-
-    let(:api_url) { 'http://github.com/api/v2/json/tree/show/Adman65/cashier/a6a09ebb4ca4b1461a' }
-
-    it "should be true if there is a features directory" do
-      tree = %Q{
-        {
-          tree: [
-            { name: 'features', type: 'tree' },
-            { name: 'Rakefile' }
-          ]
-        }
-      }
-
-      stub_request(:get, api_url).to_return(:body => tree)
-
-      subject.should have_features
-    end
-
-    it "should raise an error if the rate limit is exceeded" do
-      stub_request(:get, api_url).to_return(:status => 403)
-      lambda { subject.has_features? }.
         should raise_error(Github::RateLimitExceeded)
     end
   end
