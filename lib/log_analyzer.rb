@@ -1,5 +1,5 @@
 class LogAnalyzer 
-  TEST_UNIT_REGEX = /\d+ tests, \d+ assertions, \d+ failures, \d+ errors, \d+ skips/
+  TEST_UNIT_REGEX = /\d+ tests, \d+ assertions, \d+ failures, \d+ errors/
   RSPEC_REGEX = /\d+ examples, \d+ failures, \d+ pending/
 
   def self.pass_rate(log)
