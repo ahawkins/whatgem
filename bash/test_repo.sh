@@ -6,23 +6,29 @@ repo_path=$repos_path/$name
 echo Processing $repo
 echo Cloning into $repo_path
 
-rm -rf $repo_path
+if [ -d $repo_path]
+then
+  echo "$repo_path already exists, deleting"
+  rm -rf $repo_path
+fi
+
 cd $repos_path
 git clone $url
-cd $name
-
-echo "Now in: $(pwd)"
 
 rvmrc=$repo_path/.rvmrc
 
-echo "Checking to see if $rmvrc is present"
+echo "Checking to see if $rvmrc is present"
 
-if [ -f $rmvrc]
+if [ -f $rvmrc]
 then
   rvm use 1.8.7@$name
 else
   echo "Using provided .rvmrc"
 fi
+
+cd $repos_path
+
+echo "Now in $(pwd)"
 
 echo "Running bundle"
 bundle
