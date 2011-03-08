@@ -33,7 +33,7 @@ cd $repo_path
 echo "Now in $(pwd)"
 
 echo "Running bundle"
-bundle
+bundle --system
 
 echo "Running rake"
 rake --verbose
