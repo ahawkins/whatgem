@@ -43,7 +43,7 @@ namespace :ruby_gems do
 
       bash_script = Rails.root.join('bash','test_repo.sh')
 
-      cmd = "/bin/bash -l -c '#{bash_script} #{repo_url}'"
+      cmd = "#{bash_script} #{repo_url}"
       ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
 
       ruby_gem.save!
