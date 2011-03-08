@@ -45,10 +45,14 @@ namespace :ruby_gems do
       repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
       repo_name = ruby_gem.github_url.split('/').last
 
+      log_file = Rails.root.join('log', "#{ruby_gem}_test_results.log")
+
       bash_script = Rails.root.join('bash','test_repo.sh')
 
-      cmd = "#{bash_script} #{repo_url}"
-      ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
+      cmd = "#{bash_script} #{repo_url} > #{log_file}"
+      %x{echo "Running: #{cmd}" ; #{cmd}}
+
+      ruby_gem.test_log = File.read log_file
 
       logger.info "#{ruby_gem.test_log}"
       logger.info "\n\n\n"
