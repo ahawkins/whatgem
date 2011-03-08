@@ -26,7 +26,7 @@ else
   echo "Using provided .rvmrc"
 fi
 
-cd $repos_path
+cd $repo_path
 
 echo "Now in $(pwd)"
 
