@@ -18,8 +18,10 @@ class LogAnalyzer
   def self.test_unit_results(log)
     total_tests = log.match(/(\d+) tests/)[1].to_f
     failed_tests = log.match(/(\d+) failures/)[1].to_f
+    error_tests = log.match(/(\d+) errors/)[1].to_f
 
-    (total_tests - failed_tests) / total_tests
+
+    (total_tests - failed_tests - error_tests) / total_tests
   end
 
   def self.rspec_results(log)

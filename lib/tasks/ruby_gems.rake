@@ -43,12 +43,13 @@ namespace :ruby_gems do
 
       bash_script = Rails.root.join('bash','test_repo.sh')
 
-      cmd = "#{bash_script} #{repo_url}"
-      ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
+      cmd = "#{bash_script} #{repo_url} 2>&1"
+      ruby_gem.test_log = %x{#{cmd}}
 
-      puts "#" * 50
-      puts "#{ruby_gem.test_log}"
-      puts "#" * 50
+      header = "#{'#'*20} Results for: #{ruby_gem} #{'#'*20}"
+      puts header
+      puts ruby_gem.test_log
+      puts '#' * header.length
       puts "\n\n"
 
       ruby_gem.save!

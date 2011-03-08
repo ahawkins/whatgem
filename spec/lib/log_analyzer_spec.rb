@@ -8,6 +8,11 @@ describe LogAnalyzer do
       log = "24 tests, 38 assertions, 9 failures, 0 errors, 0 skips"
       subject.pass_rate(log).should eql(15.0/24.0)
     end
+
+    it "should count errors as failures" do
+      log = "24 tests, 38 assertions, 0 failures, 4 errors, 0 skips"
+      subject.pass_rate(log).should eql(20.0/24.0)
+    end
   end
 
   describe "Rspec" do

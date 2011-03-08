@@ -4,6 +4,8 @@ repos_path=~/repos
 repo_path=$repos_path/$name
 
 echo Processing $repo
+rvm reload
+
 echo Cloning into $repo_path
 
 if [ -d $repo_path ]
@@ -17,13 +19,13 @@ git clone $url
 
 rvmrc=$repo_path/.rvmrc
 
-echo "Checking to see if $rvmrc is present"
+echo "Checking for $rvmrc"
 
 if [ -f $rvmrc ]
 then
-  rvm use 1.8.7@$name
-else
   echo "Using provided .rvmrc"
+else
+  rvm use 1.8.7@$name
 fi
 
 cd $repo_path
