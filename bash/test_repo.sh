@@ -34,4 +34,4 @@ echo "Running bundle"
 bundle
 
 echo "Running rake"
-rake
+rake --verbose

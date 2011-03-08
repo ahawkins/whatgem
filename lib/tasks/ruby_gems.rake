@@ -45,7 +45,11 @@ namespace :ruby_gems do
 
       cmd = "#{bash_script} #{repo_url}"
       ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
-      puts "#{ruby_gem.test_log}\n\n\n"
+
+      puts "#" * 50
+      puts "#{ruby_gem.test_log}"
+      puts "#" * 50
+      puts "\n\n"
 
       ruby_gem.save!
     end
