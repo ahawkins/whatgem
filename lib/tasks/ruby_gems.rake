@@ -37,25 +37,15 @@ namespace :ruby_gems do
 
   desc "Run tests for all Gems in the db"
   task :test => :environment do
-    logger = ActiveSupport::BufferedLogger.new Rails.root.join('log','test_results.log')
-
     RubyGem.order('updated_at asc').each do |ruby_gem|
-      logger.info "Processing: #{ruby_gem}"
-
       repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
       repo_name = ruby_gem.github_url.split('/').last
 
-      log_file = Rails.root.join('log', "#{ruby_gem}_test_results.log")
-
       bash_script = Rails.root.join('bash','test_repo.sh')
 
-      cmd = "#{bash_script} #{repo_url} > #{log_file}"
-      %x{echo "Running: #{cmd}" ; #{cmd}}
-
-      ruby_gem.test_log = File.read log_file
-
-      logger.info "#{ruby_gem.test_log}"
-      logger.info "\n\n\n"
+      cmd = "#{bash_script} #{repo_url}"
+      ruby_gem.test_log = %x{echo "Running: #{cmd}" ; #{cmd}}
+      puts "#{ruby_gem.test_log}\n\n\n"
 
       ruby_gem.save!
     end
