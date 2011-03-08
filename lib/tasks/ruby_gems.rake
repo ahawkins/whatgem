@@ -38,21 +38,25 @@ namespace :ruby_gems do
   desc "Run tests for all Gems in the db"
   task :test => :environment do
     RubyGem.order('updated_at asc').each do |ruby_gem|
-      repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
-      repo_name = ruby_gem.github_url.split('/').last
+      begin
+        repo_url = ruby_gem.github_url.chomp.gsub(/https?/,'git') + '.git'
+        repo_name = ruby_gem.github_url.split('/').last
 
-      bash_script = Rails.root.join('bash','test_repo.sh')
+        bash_script = Rails.root.join('bash','test_repo.sh')
 
-      cmd = "#{bash_script} #{repo_url} 2>&1"
-      ruby_gem.test_log = %x{#{cmd}}
+        cmd = "#{bash_script} #{repo_url} 2>&1"
+        ruby_gem.test_log = %x{#{cmd}}
 
-      header = "#{'#'*20} Results for: #{ruby_gem} #{'#'*20}"
-      puts header
-      puts ruby_gem.test_log
-      puts '#' * header.length
-      puts "\n\n"
+        header = "#{'#'*20} Results for: #{ruby_gem} #{'#'*20}"
+        puts header
+        puts ruby_gem.test_log
+        puts '#' * header.length
+        puts "\n\n"
 
-      ruby_gem.save!
+        ruby_gem.save!
+      rescue Exception => ex
+        puts "An error occured!: #{ex}"
+      end
     end
   end
 
