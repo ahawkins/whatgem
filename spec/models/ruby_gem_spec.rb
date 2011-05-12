@@ -3,6 +3,9 @@ require 'spec_helper'
 describe RubyGem do
   fixtures(:ruby_gems)
 
+  it { should have_and_belong_to_many(:related_gems) }
+
+  it { should have_many(:dependencies).through(:gem_dependencies) }
   it { should have_many(:comments).dependent(:destroy) }
   it { should have_many(:votes).dependent(:destroy) }
 
@@ -259,5 +262,23 @@ describe RubyGem do
   it "should use the name for the parameter" do
     subject.name = 'cashier'
     subject.to_param.should eql('cashier')
+  end
+
+  describe "Setting the gem dependencies" do
+    let(:redis) { ruby_gems(:redis) }
+    let(:memcached) { ruby_gems(:memcached) }
+
+    it "should find existing gems by the name" do
+      subject.dependent_names = [redis.name, memcached.name]
+      subject.save!
+      subject.dependencies.should include(redis)
+      subject.dependencies.should include(memcached)
+    end
+
+    it "should import new gems that haven't been imported yet" do
+      subject.dependent-names = ['rails']
+      subject.save!
+      Resque.should_receive(:enqueue).with(ImportGemJob, 'rails')
+    end
   end
 end

@@ -8,15 +8,21 @@ class RubyGem < ActiveRecord::Base
     :delete_sql => 'DELETE * FROM related_gems WHERE 
       parent_id = #{id} OR child_id = #{id}'
 
+  has_many :gem_dependencies, :class_name => 'Dependency'
+  has_many :dependencies, :through => :gem_dependencies, :source => :dependent_ruby_gem
+
   has_many :comments, :dependent => :destroy
   has_many :votes, :dependent => :destroy
   belongs_to :user
+
+  attr_accessor :dependency_name
 
   validates :name, :description, :github_url, :presence => true
 
   validates :name, :github_url, :uniqueness => true
 
   before_save :calculate_rating
+  after_save :set_dependencies
 
   acts_as_taggable_on :tags
 

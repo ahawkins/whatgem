@@ -3,7 +3,7 @@
 Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in DeviseMailer.
-  config.mailer_sender = "please-change-me@config-initializers-devise.com"
+  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -54,7 +54,7 @@ Devise.setup do |config|
   config.stretches = 10
 
   # Setup a pepper to generate the encrypted password.
-  # config.pepper = "55120659a462fa1b671c9829bc4cf8b56d5d213c176c745cc314b50f02f35c9e520123e0beb269822605c789c891e0e9ffa6d746740e2ad9503adf1087bb7759"
+  # config.pepper = "e82ada434447bd9e67beb06c0d95db62f8ac3cefe770f884b1d9d6af636fca21a1c337779f52bc07b69b966d021d8fd1a8a61939189563582dc444bfac426df9"
 
   # ==> Configuration for :confirmable
   # The time you want to give your user to confirm his account. During this time
@@ -64,6 +64,9 @@ Devise.setup do |config|
   # without confirming the account, but blocking it after a certain period
   # (ie 2 days).
   # config.confirm_within = 2.days
+
+  # Defines which key will be used when confirming an account
+  # config.confirmation_keys = [ :email ]
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
@@ -79,9 +82,13 @@ Devise.setup do |config|
   # to false if you are not using database authenticatable.
   config.use_salt_as_remember_token = true
 
+  # Options to be passed to the created cookie. For instance, you can set
+  # :secure => true in order to force SSL only cookies.
+  # config.cookie_options = {}
+
   # ==> Configuration for :validatable
-  # Range for password length. Default is 6..20.
-  # config.password_length = 6..20
+  # Range for password length. Default is 6..128.
+  # config.password_length = 6..128
 
   # Regex to use to validate the email address
   # config.email_regexp = /\A([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})\z/i
@@ -118,6 +125,11 @@ Devise.setup do |config|
   #
   # Defines which key will be used when recovering the password for an account
   # config.reset_password_keys = [ :email ]
+
+  # Time interval you can reset your password with a reset password key.
+  # Don't put a too small interval or your users won't have the time to
+  # change their passwords.
+  config.reset_password_within = 2.hours
 
   # ==> Configuration for :encryptable
   # Allow you to use another encryption algorithm besides bcrypt (default). You can use
@@ -158,8 +170,9 @@ Devise.setup do |config|
   # If you have any extra navigational formats, like :iphone or :mobile, you
   # should add them to the navigational formats lists.
   #
-  # The :"*/*" format below is required to match Internet Explorer requests.
-  # config.navigational_formats = [:"*/*", :html]
+  # The :"*/*" and "*/*" formats below is required to match Internet
+  # Explorer requests.
+  # config.navigational_formats = [:"*/*", "*/*", :html]
 
   # The default HTTP method used to sign out a resource. Default is :get.
   # config.sign_out_via = :get
@@ -172,6 +185,7 @@ Devise.setup do |config|
   github = config_file[Rails.env]
 
   config.omniauth :github, github['client_id'], github['secret']
+
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

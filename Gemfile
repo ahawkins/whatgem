@@ -8,7 +8,7 @@ gem 'rails', '3.0.3'
 gem 'sqlite3', :require => 'sqlite3'
 gem 'pg'
 gem 'heroku'
-gem "devise", :git => 'https://github.com/plataformatec/devise.git'
+gem "devise"
 gem "haml"
 gem "haml-rails"
 gem 'formtastic'

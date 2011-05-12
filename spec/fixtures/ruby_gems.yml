@@ -3,3 +3,15 @@ cashier:
   description: Tag based caching
   user: Adman65
   github_url: 'https://github.com/Adman65/cashier'
+
+memcached:
+  name: memcached
+  description: Memcached Wrapper
+  user: Adman65
+  github_url: 'https://github.com/memached/memcached'
+
+redis:
+  name: redis
+  description: Redis Wrapper
+  user: Adman65
+  github_url: 'https://github.com/redis/redis

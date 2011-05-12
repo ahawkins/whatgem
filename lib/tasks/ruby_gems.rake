@@ -23,7 +23,7 @@ namespace :ruby_gems do
           gem_name = link_text.match(/(.+)\s\(/)[1]
           downloads = li.search(%Q{div[@class='downloads']/strong}).text
 
-          if downloads.to_i >= 1000 && RubyGem.named(gem_name).blank?
+          if RubyGem.named(gem_name).blank?
             puts "#{gem_name} added to import queue"
             Resque.enqueue(ImportGemJob, gem_name)
           elsif RubyGem.named(gem_name)
